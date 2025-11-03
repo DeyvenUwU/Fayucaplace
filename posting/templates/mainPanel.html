@@ -2,7 +2,24 @@
 
 {% block content %}
 
-<h1>Página principal</h1>
+<h1>Esta semana...</h1>
+
+<h1>Anuncios</h1>
+<ul>
+    {% for p in posts %}
+        <li>
+            
+                {% if p.imagen %}
+                    <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}" width="200">
+                {% endif %}
+                
+                <h2>{{ p.titulo }}</h2>                
+            
+        </li>
+    {% empty %}
+        <li>No hay anuncios</li>
+    {% endfor %}
+</ul>
 
 {% endblock %}
 

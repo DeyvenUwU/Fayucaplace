@@ -1,8 +1,15 @@
 {% extends 'baseDesing.html'%}
 
 {% block content %}
-
 <h1>Nuevo anuncio</h1>
+
+<form action="/newad/" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{form.as_p}}
+
+    <button>Publicar</button>
+</form>
 
 {% endblock %}
 

@@ -10,7 +10,10 @@ from .models import Publicacion
 
 # Create your views here.
 def mainPanel(request):
-    return render(request, 'mainPanel.html')
+    posts = Publicacion.objects.filter(anuncio__isnull=False).select_related('anuncio')
+    return render(request, 'mainPanel.html', {
+        'posts': posts
+    })
 
 def buy(request):
     posts = Publicacion.objects.filter(articulo__isnull=False).select_related('articulo')
@@ -40,4 +43,21 @@ def newArticle(request):
 
 
 def newAd(request):
-    return render(request, 'newAd.html')
+    if request.method == 'GET':
+        return render(request, 'newAd.html', {
+            'form': AdForm
+        })
+    else:
+        try:
+            form = AdForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save(usuario=request.user)
+                return redirect('mainPanel')  # redirige a donde desees
+            else:
+                form = AdForm()
+            #return redirect('mainPanel')  # redirige a donde desees
+        except ValueError:
+            return render(request, 'newAd.html', {
+            'form': AdForm,
+            'error': 'Datos no validos'
+        })

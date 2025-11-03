@@ -20,7 +20,7 @@ urlpatterns = [
     path('mainpanel/', postViews.mainPanel, name='mainPanel'),
     path('buy/', postViews.buy, name='buy'),
     path('newarticle/', postViews.newArticle, name='newArticle'),
-    path('newad/', postViews.newAd, name='newAd')
+    path('newad/', postViews.newAd, name='newAd'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
