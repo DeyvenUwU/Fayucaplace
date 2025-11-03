@@ -1,20 +1,20 @@
 {% extends 'baseDesing.html'%}
 
 {% block content %}
-<h1>Iniciar sesión</h1>
+
+<h1>Crear cuenta</h1>
 
 {% if error %}
     <p style="color:red;">{{ error }}</p>
 {% endif %}
 
-<form action="/login/" method="POST">
+<form action="/signup/" method='POST'>
     {% csrf_token %}
-
+    
     {{form.as_p}}
 
-    <button>Ingresar</button>
+    <button>Registrar</button>
 </form>
-
 {% endblock %}
 
 {% block scripts %}

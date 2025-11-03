@@ -12,7 +12,7 @@
         <li><a href="/editprofile">Editar perfil</a></li>
         <li><a href="/logout">Cerrar sesión</a></li>
       {% else %}
-        <li><a href="/singup">Crear cuenta</a></li>
+        <li><a href="/signup">Crear cuenta</a></li>
         <li><a href="/login">Ingresar</a></li>
       {% endif %}
     </nav>
@@ -20,6 +20,7 @@
     {% block content %} 
     {% endblock %}
 
-    
+    {% block scripts %}
+    {% endblock %}
 </body>
 </html>

@@ -1,8 +1,14 @@
 from pathlib import Path
+from django.conf import settings
+from django.conf.urls.static import static
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+#para las fotos jsjs
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -14,7 +20,6 @@ SECRET_KEY = 'django-insecure-fnng%qynlgdu#9*@3kybychnm=4t))#o(mlw$@n(ey##)cv9g7
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 INSTALLED_APPS = [
