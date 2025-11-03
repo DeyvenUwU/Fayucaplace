@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+      {% if user.is_authenticated%}
+        <li><a href="/mainpanel">Pagina principal</a></li>
+        <li><a href="/editprofile">Editar perfil</a></li>
+        <li><a href="/logout">Cerrar sesión</a></li>
+      {% else %}
+        <li><a href="/singup">Crear cuenta</a></li>
+        <li><a href="/login">Ingresar</a></li>
+      {% endif %}
+    </nav>
+
+    {% block content %} 
+    {% endblock %}
+
+    
+</body>
+</html>
