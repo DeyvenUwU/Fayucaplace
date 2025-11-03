@@ -1,0 +1,17 @@
+{% extends 'baseDesing.html'%}
+
+{% block content %}
+<h1>Nueva publicación</h1>
+
+<form action="/newarticle/" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{form.as_p}}
+
+    <button>Publicar</button>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

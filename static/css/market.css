@@ -1,0 +1,608 @@
+/* =========================
+   market.css  tema oscuro
+   ========================= */
+
+/* 1) Reset mínimo */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* 2) Variables */
+:root {
+  --bg: #0f1424;
+  --panel: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.08);
+  --muted: #9aa4b2;
+  --text: #e6e8ec;
+  --accent: #3b5bfd;
+  --accent-700: #2f48cf;
+  --radius: 16px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --container: 1120px;
+}
+
+/* 3) Fondo y tipografía */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: radial-gradient(
+        1200px 600px at 20% -10%,
+        #1a2036 0%,
+        transparent 50%
+      ),
+      var(--bg);
+  }
+}
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Inter, "Helvetica Neue", Arial;
+}
+
+/* 4) Contenedor base */
+main,
+.container,
+.contenido,
+#app,
+#root {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: 32px 20px;
+}
+
+/* 5) Navbar genérica */
+header,
+nav {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+nav,
+header nav,
+.topbar {
+  max-width: var(--container);
+  margin: auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-end;
+}
+nav a,
+header a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+nav a:hover,
+header a:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* 6) Títulos y textos */
+h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.1;
+  margin: 20px 0 10px;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: clamp(20px, 2.6vw, 28px);
+  margin: 28px 0 12px;
+}
+h3 {
+  font-size: 20px;
+  margin: 22px 0 8px;
+}
+p,
+small {
+  color: var(--muted);
+}
+strong {
+  color: var(--text);
+}
+
+/* 7) Botones */
+button,
+.btn,
+a.button,
+input[type="submit"] {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(59, 91, 253, 0.35);
+  transition: transform 0.05s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+button:hover,
+.btn:hover,
+a.button:hover,
+input[type="submit"]:hover {
+  background: var(--accent-700);
+  box-shadow: 0 8px 18px rgba(59, 91, 253, 0.45);
+}
+button:active,
+.btn:active,
+a.button:active {
+  transform: translateY(1px);
+}
+button.secondary,
+.btn.secondary,
+a.button.secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+/* 8) Tarjetas universales */
+.card,
+article,
+section[data-card],
+li[data-card],
+div[data-card] {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+/* 9) Rejillas comunes */
+.grid,
+.cards,
+.listado,
+.rows {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .grid-2,
+  .two,
+  .cols-2,
+  .ventas-anuncios,
+  .listado.cols-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+/* 10) Inputs */
+input,
+select,
+textarea {
+  width: 100%;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(59, 91, 253, 0.2);
+}
+
+/* 11) Skeleton */
+.thumb,
+.avatar,
+.img-ghost {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+}
+.skeleton {
+  height: 8px;
+  width: 100%;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.06)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* 12) Tablas */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+thead th {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 10px 12px;
+}
+tbody td {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* 13) Utilidades */
+.mt-2 {
+  margin-top: 8px;
+}
+.mt-3 {
+  margin-top: 12px;
+}
+.mt-4 {
+  margin-top: 16px;
+}
+.mb-2 {
+  margin-bottom: 8px;
+}
+.mb-3 {
+  margin-bottom: 12px;
+}
+.mb-4 {
+  margin-bottom: 16px;
+}
+.p-2 {
+  padding: 8px;
+}
+.p-3 {
+  padding: 12px;
+}
+.p-4 {
+  padding: 16px;
+}
+.rounded {
+  border-radius: var(--radius);
+}
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 14) Centrado global y texto un poco menor */
+html,
+body {
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.5;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+main,
+.container,
+.contenido,
+#app,
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+li,
+a,
+button {
+  text-align: center;
+  margin-inline: auto;
+}
+
+/* 15) Formularios centrados y compactos */
+form {
+  max-width: 480px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+form label,
+form p,
+form ul {
+  text-align: left;
+  color: var(--muted);
+  font-size: 14px;
+}
+form input,
+form select,
+form textarea {
+  display: block;
+  width: 100%;
+  margin: 6px 0 14px 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+form ul {
+  list-style: disc inside;
+  margin: 10px 0 20px;
+  padding-left: 20px;
+  text-align: left;
+}
+button,
+input[type="submit"] {
+  display: block;
+  margin: 0 auto;
+}
+
+/* 16) Listas de ventas y publicaciones como tarjetas en grilla */
+main ul:not(.nav):not(.pagination),
+section ul:not(.nav):not(.pagination),
+.listado,
+.cards,
+.ventas,
+.publicaciones {
+  list-style: none;
+  margin: 24px auto;
+  padding: 0;
+  max-width: var(--container);
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+main ul:not(.nav):not(.pagination) > li,
+section ul:not(.nav):not(.pagination) > li,
+.listado > *,
+.cards > *,
+.ventas > *,
+.publicaciones > * {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  text-align: left;
+  transition: transform 0.1s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+main ul:not(.nav):not(.pagination) > li:hover,
+section ul:not(.nav):not(.pagination) > li:hover,
+.listado > *:hover,
+.cards > *:hover,
+.ventas > *:hover,
+.publicaciones > *:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 91, 253, 0.35);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+main ul img,
+section ul img,
+.listado img,
+.cards img,
+.ventas img,
+.publicaciones img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 0 0 10px 0;
+  display: block;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+}
+main ul a,
+section ul a,
+.listado a,
+.cards a,
+.ventas a,
+.publicaciones a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
+}
+main ul a:hover,
+section ul a:hover,
+.listado a:hover,
+.cards a:hover,
+.ventas a:hover,
+.publicaciones a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.price,
+.meta,
+main ul li p:last-child,
+section ul li p:last-child {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* 17) Encabezados centrados */
+h1,
+h2 {
+  text-align: center;
+}
+/* ====== Comprar / Anuncios / Publicaciones — tarjetas en grilla ====== */
+/* Aplica a los listados reales (no a la barra de navegación) */
+main > ul:not(.nav):not(.pagination),
+main section > ul:not(.nav):not(.pagination),
+main .listado,
+main .ventas,
+main .publicaciones {
+  list-style: none;
+  margin: 24px auto;
+  padding: 0;
+  max-width: var(--container);
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Cada elemento como tarjeta centrada */
+main > ul:not(.nav):not(.pagination) > li,
+main section > ul:not(.nav):not(.pagination) > li,
+main .listado > *,
+main .ventas > *,
+main .publicaciones > * {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+main > ul:not(.nav):not(.pagination) > li:hover,
+main section > ul:not(.nav):not(.pagination) > li:hover,
+main .listado > *:hover,
+main .ventas > *:hover,
+main .publicaciones > *:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 91, 253, 0.35);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Imágenes centradas y recortadas profesionalmente */
+main > ul:not(.nav):not(.pagination) img,
+main section > ul:not(.nav):not(.pagination) img,
+main .listado img,
+main .ventas img,
+main .publicaciones img {
+  display: block;
+  width: 100%;
+  height: 180px; /* ajusta si lo quieres más alto */
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 0 0 10px 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+}
+
+/* Título y precio */
+main > ul:not(.nav):not(.pagination) a,
+main section > ul:not(.nav):not(.pagination) a,
+main .listado a,
+main .ventas a,
+main .publicaciones a {
+  display: block;
+  color: var(--text) !important; /* quita azul/morado */
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
+  margin-top: 6px;
+}
+main a:hover {
+  text-decoration: underline;
+  color: #fff !important;
+}
+
+main > ul:not(.nav):not(.pagination) p,
+main section > ul:not(.nav):not(.pagination) p,
+main .listado p,
+main .ventas p,
+main .publicaciones p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ====== Vista de detalle — imagen + descripción presentables ====== */
+main article,
+main .detail,
+main .product,
+main .post {
+  max-width: 900px;
+  margin: 24px auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+main article .content,
+main .detail .content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 900px) {
+  main article .content,
+  main .detail .content {
+    grid-template-columns: 1.2fr 1fr; /* imagen | datos */
+    align-items: start;
+  }
+}
+
+main article img,
+main .detail img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+main article h1,
+main .detail h1 {
+  text-align: center;
+  margin: 0 0 6px;
+}
+main article .price,
+main .detail .price {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+}
+main article p,
+main .detail p {
+  color: var(--text);
+}
+
+main article :is(button, .btn, input[type="submit"]),
+main .detail :is(button, .btn, input[type="submit"]) {
+  display: block;
+  margin: 12px auto 0;
+}
+
+/* ====== Correcciones de listas con puntos que se veían feos ====== */
+main ul:not(.nav):not(.pagination) {
+  list-style: none;
+  padding-left: 0;
+}

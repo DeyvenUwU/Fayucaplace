@@ -1,0 +1,56 @@
+{% extends 'baseDesing.html'%}
+{% load static %}
+
+{% block content %}
+<h1>Editar perfil</h1>
+
+{% if error %}
+    <p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form action="/editprofile/" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+    {% if user.profile.photo %}
+    <div class="text-center mb-3">
+        <img id="profile-preview" src="{{ user.profile.photo.url }}" 
+             alt="Foto de perfil" 
+             class="rounded-circle img-thumbnail" 
+             style="width: 150px; height: 150px; object-fit: cover;">
+    </div>
+    {% else %}
+    <div class="text-center mb-3">
+        <img id="profile-preview" src="{% static 'img/default-profile.png' %}" 
+             alt="Foto de perfil por defecto" 
+             class="rounded-circle img-thumbnail" 
+             style="width: 150px; height: 150px; object-fit: cover;">
+    </div>
+    {% endif %}
+
+  {{ form.as_p }}
+  <button type="submit">Guardar cambios</button>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputPhoto = document.getElementById('id_photo');
+    const preview = document.getElementById('profile-preview');
+
+    if (inputPhoto && preview) {
+        inputPhoto.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
