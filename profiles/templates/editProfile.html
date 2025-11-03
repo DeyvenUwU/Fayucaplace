@@ -1,4 +1,5 @@
 {% extends 'baseDesing.html'%}
+{% load static %}
 
 {% block content %}
 <h1>Editar perfil</h1>
@@ -14,6 +15,13 @@
     <div class="text-center mb-3">
         <img id="profile-preview" src="{{ user.profile.photo.url }}" 
              alt="Foto de perfil" 
+             class="rounded-circle img-thumbnail" 
+             style="width: 150px; height: 150px; object-fit: cover;">
+    </div>
+    {% else %}
+    <div class="text-center mb-3">
+        <img id="profile-preview" src="{% static 'img/default-profile.png' %}" 
+             alt="Foto de perfil por defecto" 
              class="rounded-circle img-thumbnail" 
              style="width: 150px; height: 150px; object-fit: cover;">
     </div>
