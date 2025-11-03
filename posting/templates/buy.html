@@ -6,7 +6,7 @@
 <ul>
     {% for p in posts %}
         <li>
-            
+            <a href="{% url 'articleDetails' p.id %}">
                 {% if p.imagen %}
                     <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}" width="200">
                 {% endif %}
@@ -15,7 +15,7 @@
                 {% if p.articulo %}
                     <p>${{ p.articulo.precio }}</p>
                 {% endif %}
-
+            </a>
         </li>
     {% empty %}
         <li>No hay publicaciones disponibles.</li>

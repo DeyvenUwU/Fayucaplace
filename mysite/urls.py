@@ -21,6 +21,9 @@ urlpatterns = [
     path('buy/', postViews.buy, name='buy'),
     path('newarticle/', postViews.newArticle, name='newArticle'),
     path('newad/', postViews.newAd, name='newAd'),
+    path('article/<int:id>/', postViews.articleDetails, name='articleDetails'),
+    path('ad/<int:id>/', postViews.adDetails, name='adDetails')
 ]
+
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

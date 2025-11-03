@@ -61,3 +61,11 @@ def newAd(request):
             'form': AdForm,
             'error': 'Datos no validos'
         })
+
+def articleDetails(request, id):
+    post = get_object_or_404(Publicacion.objects.select_related('articulo', 'idUsuario'), pk=id)
+    return render(request, 'articleDetails.html', {'post': post})
+
+def adDetails(request, id):
+    post = get_object_or_404(Publicacion.objects.select_related('anuncio', 'idUsuario'), pk=id)
+    return render(request, 'adDetails.html', {'post': post})

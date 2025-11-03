@@ -1,0 +1,17 @@
+{% extends 'baseDesing.html' %}
+
+{% block content %}
+    <h1>Detalles publicación</h1>
+
+    <h1>{{post.titulo}}</h1>
+    {% if post.imagen %}
+        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" width="200">
+    {% endif %}
+    <p>Anunciado por: {{post.idUsuario.username}}</p>
+    <button>Enviar mensaje</button>
+    <p>Detalles: {{post.descripcion}}</p>
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
