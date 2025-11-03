@@ -70,6 +70,3 @@ def editProfile(request):
 def signOut(request):
     logout(request)
     return redirect('home')
-
-def mainPanel(request):
-    return render(request, 'mainPanel.html')

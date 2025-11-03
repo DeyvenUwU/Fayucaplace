@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #nuestras apps jsjs
-    'profiles'
+    'profiles',
+    'posting'
 ]
 
 MIDDLEWARE = [
