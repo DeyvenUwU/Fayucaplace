@@ -10,7 +10,7 @@
     <p>Precio: ${{post.articulo.precio}}</p>
     <p>Cant: {{post.articulo.cantidad}}</p>
     <p>Vendedor: {{post.idUsuario.username}}</p>
-    <button>Enviar mensaje</button>
+    <a href="{% url 'sendMessage' post.id %}" class="btn">Enviar mensaje</a>
     <p>Detalles: {{post.descripcion}}</p>
 
 {% endblock %}

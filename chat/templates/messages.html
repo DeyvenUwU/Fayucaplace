@@ -1,0 +1,52 @@
+{% extends 'baseDesing.html' %}
+
+{% block content %}
+<h1>Mensajes</h1>
+<div style="display: flex; gap: 20px;">
+
+    <!-- Lista de chats -->
+    <div style="width: 30%; border-right: 1px solid #ccc; padding-right: 10px;">
+        <h3>Tus chats</h3>
+        <ul>
+            {% for chat in chats %}
+                {% if chat.user1 == user %}
+                    <li><a href="?chat_id={{ chat.id }}">{{ chat.user2.username }}</a></li>
+                {% else %}
+                    <li><a href="?chat_id={{ chat.id }}">{{ chat.user1.username }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Mensajes del chat seleccionado -->
+    <div style="width: 70%; padding-left: 10px;">
+        {% if selected_chat %}
+            <h3>Chat con {% if selected_chat.user1 == user %}{{ selected_chat.user2.username }}{% else %}{{ selected_chat.user1.username }}{% endif %}</h3>
+            <div id="messages" style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                {% for message in messages %}
+                    <p>
+                        <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+                    </p>
+                {% empty %}
+                    <p>No hay mensajes todavía.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Formulario para enviar mensaje -->
+            <form method="post" action="?chat_id={{ selected_chat.id }}">
+                {% csrf_token %}
+                <textarea name="content" required style="width: 100%; height: 60px;"></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+            
+        {% else %}
+            <p>Selecciona un chat para ver los mensajes.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+{% endblock %}

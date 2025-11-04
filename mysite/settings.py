@@ -32,7 +32,8 @@ INSTALLED_APPS = [
 
     #nuestras apps jsjs
     'profiles',
-    'posting'
+    'posting',
+    'chat'
 ]
 
 MIDDLEWARE = [
