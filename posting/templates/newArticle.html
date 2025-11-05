@@ -3,15 +3,163 @@
 {% block content %}
 <h1>Nueva publicación</h1>
 
-<form action="/newarticle/" method="POST" enctype="multipart/form-data">
+<div id="error-container" style="color: red;"></div>
+
+<form id="new-article-form">
     {% csrf_token %}
 
-    {{form.as_p}}
+    <div class="form-group">
+        <label for="id_titulo">Título</label>
+        <input type="text" name="titulo" id="id_titulo" required>
+        <div id="error-titulo" class="error-message"></div>
+    </div>
 
-    <button>Publicar</button>
+    <div class="form-group">
+        <label for="id_descripcion">Descripción</label>
+        <textarea name="descripcion" id="id_descripcion" required></textarea>
+        <div id="error-descripcion" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_precio">Precio</label>
+        <input type="number" name="precio" id="id_precio" step="0.01" required>
+        <div id="error-precio" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_cantidad">Cantidad</label>
+        <input type="number" name="cantidad" id="id_cantidad" required>
+        <div id="error-cantidad" class="error-message"></div>
+    </div>
+
+    <!-- Image upload is not handled by this AJAX form for simplicity -->
+    <!-- <div class="form-group">
+        <label for="id_imagen">Imagen</label>
+        <input type="file" name="imagen" id="id_imagen" accept="image/*">
+    </div> -->
+
+    <div class="form-group">
+        <label for="categoria">Categoría</label>
+        <select id="categoria" name="categoria" class="form-control">
+            <option value="" selected>---------</option>
+            {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="subcategoria">Subcategoría</label>
+        <select id="subcategoria" name="subcategoria" class="form-control" disabled required>
+            <option value="">-- Selecciona una categoría primero --</option>
+        </select>
+        <div id="error-subcategoria" class="error-message"></div>
+    </div>
+
+
+    <button type="submit">Publicar</button>
 </form>
 
 {% endblock %}
 
 {% block scripts %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Dependent dropdown logic
+    const categoriaSelect = document.getElementById('categoria');
+    const subcategoriaSelect = document.getElementById('subcategoria');
+
+    categoriaSelect.addEventListener('change', async function() {
+        const categoriaId = this.value;
+        subcategoriaSelect.innerHTML = '<option value="">Cargando...</option>';
+        subcategoriaSelect.disabled = true;
+
+        if (!categoriaId) {
+            subcategoriaSelect.innerHTML = '<option value="">-- Selecciona una categoría primero --</option>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/subcategorias/?categoria=${categoriaId}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const subcategorias = await response.json();
+
+            subcategoriaSelect.innerHTML = '<option value="">---------</option>';
+            subcategorias.forEach(sub => subcategoriaSelect.add(new Option(sub.nombre, sub.id)));
+            subcategoriaSelect.disabled = false;
+        } catch (error) {
+            console.error('Error fetching subcategories:', error);
+            subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+        }
+    });
+
+    // AJAX form submission logic
+    const form = document.getElementById('new-article-form');
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = {
+            titulo: document.getElementById('id_titulo').value,
+            descripcion: document.getElementById('id_descripcion').value,
+            subcategoria: document.getElementById('subcategoria').value,
+            articulo: {
+                precio: document.getElementById('id_precio').value,
+                cantidad: document.getElementById('id_cantidad').value
+            }
+        };
+
+        try {
+            const response = await fetch('/api/publicaciones/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const newPublicacion = await response.json();
+                window.location.href = `/article/${newPublicacion.id}/`;
+            } else {
+                const errors = await response.json();
+                // Clear previous errors
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                document.getElementById('error-container').textContent = '';
+
+                for (const key in errors) {
+                    if (key === 'articulo') {
+                        for (const articuloKey in errors.articulo) {
+                            const errorDiv = document.getElementById(`error-${articuloKey}`);
+                            if(errorDiv) errorDiv.textContent = errors.articulo[articuloKey].join(' ');
+                        }
+                    } else {
+                        const errorDiv = document.getElementById(`error-${key}`);
+                        if(errorDiv) errorDiv.textContent = errors[key].join(' ');
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            document.getElementById('error-container').textContent = 'Ocurrió un error al enviar el formulario.';
+        }
+    });
+});
+</script>
 {% endblock %}

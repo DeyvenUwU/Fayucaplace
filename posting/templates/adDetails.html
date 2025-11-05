@@ -1,4 +1,4 @@
-{% extends 'baseDesing.html' %}
+{% extends 'baseDesing.html'%}
 
 {% block content %}
     <h1>Detalles publicación</h1>
@@ -8,7 +8,7 @@
         <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" width="200">
     {% endif %}
     <p>Anunciado por: {{post.idUsuario.username}}</p>
-    <button>Enviar mensaje</button>
+    <a href="{% url 'sendMessage' post.id %}" class="btn">Enviar mensaje</a>
     <p>Detalles: {{post.descripcion}}</p>
 
 {% endblock %}
