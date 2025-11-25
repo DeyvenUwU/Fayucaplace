@@ -28,43 +28,31 @@ class EditProfileForm(forms.ModelForm):
         required=True,
         label='Nombre de usuario'
     )
-    name = forms.CharField(
-        max_length=150,
-        required=False,
-        label='Nombre completo',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'})  # visible pero no editable
-    )
     email = forms.EmailField(
-        required=False,
-        label='Correo electrónico',
-        widget=forms.EmailInput(attrs={'readonly': 'readonly'})  # visible pero no editable
+        required=True,
+        label='Correo electrónico'
     )
 
     class Meta:
         model = Profile
-        fields = ['photo', 'username', 'name', 'phone', 'email']
+        fields = ['image', 'username', 'email']
         labels = {
-            'photo': 'Foto de perfil',
-            'phone': 'Teléfono',
+            'image': 'Foto de perfil',
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  # recibimos el usuario actual
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
         if user:
-            # Prellenar datos desde User y Profile
             self.fields['username'].initial = user.username
             self.fields['email'].initial = user.email
-            self.fields['name'].initial = self.instance.name
 
     def save(self, commit=True):
         profile = super().save(commit=False)
-
-        # Actualizar el username y el phone
         user = profile.user
         user.username = self.cleaned_data['username']
-        profile.phone = self.cleaned_data['phone']
+        user.email = self.cleaned_data['email']
 
         if commit:
             user.save()

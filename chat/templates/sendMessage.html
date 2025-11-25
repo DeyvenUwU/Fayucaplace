@@ -1,0 +1,23 @@
+{% extends 'baseDesing.html' %}
+
+{% block title %}Enviar mensaje | FayucaPlace{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-semibold mb-3">Enviar mensaje a {{ post.idUsuario.username }}</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="d-flex gap-2 mt-2">
+            <button type="submit" class="btn btn-primary btn-sm">Enviar</button>
+            <a href="{{ cancel_url }}" class="btn btn-outline-secondary btn-sm">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
