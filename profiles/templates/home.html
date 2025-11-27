@@ -1,10 +1,37 @@
 {% extends 'baseDesing.html'%}
 
+{% block title %}Inicio | FayucaPlace{% endblock %}
+
 {% block content %}
-
-<h1>Inicio</h1>
-
+<section class="py-5 text-center">
+	<h1 class="display-5 fw-bold mb-3">Bienvenido a FayucaPlace</h1>
+	<p class="lead text-muted mb-4">Compra, vende y anuncia productos locales con una experiencia sencilla y moderna.</p>
+	<div class="d-flex justify-content-center gap-2 flex-wrap">
+		<a href="/buy" class="btn btn-primary btn-lg">Explorar productos</a>
+		<a href="/newarticle" class="btn btn-outline-primary btn-lg">Publicar artículo</a>
+		<a href="/newad" class="btn btn-outline-secondary btn-lg">Crear anuncio</a>
+	</div>
+</section>
+<section class="row g-4">
+	<div class="col-md-4">
+		<div class="p-4 bg-white border rounded-3 h-100">
+			<h3 class="h6 fw-semibold">Seguridad</h3>
+			<p class="small text-muted mb-0">Operaciones mediante cuentas verificadas y control básico de sesiones.</p>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="p-4 bg-white border rounded-3 h-100">
+			<h3 class="h6 fw-semibold">Filtros</h3>
+			<p class="small text-muted mb-0">Filtra por categoría y subcategoría para encontrar lo que buscas rápido.</p>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="p-4 bg-white border rounded-3 h-100">
+			<h3 class="h6 fw-semibold">Mensajería</h3>
+			<p class="small text-muted mb-0">Comunícate con otros usuarios para concretar tus compras y ventas.</p>
+		</div>
+	</div>
+</section>
 {% endblock %}
 
-{% block scripts %}
-{% endblock %}
+{% block scripts %}{% endblock %}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Artículos</title>
+    <style>
+        body { font-family: sans-serif; }
+        h1 { text-align: center; color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Artículos en Venta</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Vendedor</th>
+                <th>Fecha de Publicación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr>
+                <td>{{ post.titulo }}</td>
+                <td>${{ post.articulo.precio }}</td>
+                <td>{{ post.articulo.cantidad }}</td>
+                <td>{{ post.idUsuario.username }}</td>
+                <td>{{ post.fechaPublicacion|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No hay artículos disponibles.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

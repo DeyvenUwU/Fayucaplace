@@ -1,27 +1,151 @@
 {% extends 'baseDesing.html'%}
 
+{% block title %}Panel principal | FayucaPlace{% endblock %}
+
 {% block content %}
+<section class="mb-4">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <h1 class="display-6 fw-semibold mb-2">Esta semana...</h1>
+            <p class="text-muted mb-0">Explora las publicaciones y anuncios más recientes.</p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <a href="/newarticle" class="btn btn-primary me-2">Vender</a>
+            <a href="/newad" class="btn btn-outline-primary">Anunciar</a>
+        </div>
+    </div>
+</section>
 
-<h1>Esta semana...</h1>
+<div class="card-filter mb-4">
+    <form class="row g-3" onsubmit="return false;">
+        <div class="col-md-4">
+            <label class="form-label" for="search">Buscar</label>
+            <input type="text" id="search" class="form-control" placeholder="Buscar por título...">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="categoria">Categoría</label>
+            <select id="categoria" class="form-select">
+                <option value="">Todas</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="subcategoria">Subcategoría</label>
+            <select id="subcategoria" class="form-select" disabled>
+                <option value="">Todas</option>
+            </select>
+        </div>
+    </form>
+</div>
 
-<h1>Anuncios</h1>
-<ul>
+<h2 class="h4 mb-3">Anuncios</h2>
+<ul id="post-list" class="grid-list">
     {% for p in posts %}
         <li>
-            <a href="{% url 'adDetails' p.id %}">
+            <a href="{% url 'adDetails' p.id %}" class="text-decoration-none d-block">
                 {% if p.imagen %}
-                    <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}" width="200">
+                    <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}">
                 {% endif %}
-                
-                <h2>{{ p.titulo }}</h2>                
+                <h3 class="h6 fw-semibold mb-1">{{ p.titulo }}</h3>
+                {% if p.anuncio %}
+                    <p class="small text-muted mb-0">Válido hasta: {{ p.anuncio.fechaFin }}</p>
+                {% endif %}
             </a>
         </li>
     {% empty %}
-        <li>No hay anuncios</li>
+        <li class="text-muted">No hay anuncios</li>
     {% endfor %}
 </ul>
-
 {% endblock %}
 
 {% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search');
+    const categoriaSelect = document.getElementById('categoria');
+    const subcategoriaSelect = document.getElementById('subcategoria');
+    const postList = document.getElementById('post-list');
+
+    async function fetchAndRenderPosts() {
+        const params = new URLSearchParams();
+        const searchTerm = searchInput.value;
+        const subcategoriaId = subcategoriaSelect.value;
+
+        if (searchTerm.trim()) {
+            params.append('search', searchTerm);
+        }
+        if (subcategoriaId) { // This check is sufficient as an empty string is falsy
+            params.append('subcategoria', subcategoriaId);
+        }
+
+        // We only want to show ads, so we filter by publications that have an ad
+        params.append('anuncio__isnull', 'false');
+        const url = `/api/publicaciones/?${params.toString()}`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const posts = await response.json();
+
+            postList.innerHTML = '';
+            if (posts.length > 0) {
+                posts.forEach(post => {
+                    const postElement = document.createElement('li');
+                    let postContent = `
+                        <a href="/ad/${post.id}/">
+                            ${post.imagen ? `<img src="${post.imagen}" alt="${post.titulo}" width="200">` : ''}
+                            <h2>${post.titulo}</h2>
+                            ${post.anuncio ? `<p>Válido hasta: ${post.anuncio.fechaFin}</p>` : ''}
+                        </a>
+                    `;
+                    postElement.innerHTML = postContent;
+                    postList.appendChild(postElement);
+                });
+            } else {
+                postList.innerHTML = '<li>No hay anuncios que coincidan con los filtros.</li>';
+            }
+        } catch (error) {
+            console.error('Error fetching posts:', error); // Log the error object
+            if (error.response) { // If it's an HTTP error, try to log more details
+                console.error('Response status:', error.response.status);
+                error.response.json().then(errData => console.error('Response data:', errData)).catch(() => {});
+            }
+            postList.innerHTML = '<li>Ocurrió un error al cargar los anuncios.</li>';
+        }
+    }
+
+    categoriaSelect.addEventListener('change', async function() {
+        const categoriaId = this.value;
+        subcategoriaSelect.innerHTML = '<option value="">Todas las subcategorías</option>';
+        subcategoriaSelect.disabled = true;
+
+        if (!categoriaId) {
+            fetchAndRenderPosts();
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/subcategorias/?categoria=${categoriaId}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const subcategorias = await response.json();
+
+            subcategorias.forEach(sub => subcategoriaSelect.add(new Option(sub.nombre, sub.id)));
+            subcategoriaSelect.disabled = false;
+        } catch (error) {
+            console.error('Error fetching subcategories:', error); // Log the error object
+            if (error.response) { // If it's an HTTP error, try to log more details
+                console.error('Response status:', error.response.status);
+                error.response.json().then(errData => console.error('Response data:', errData)).catch(() => {});
+            }
+            subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+        }
+        fetchAndRenderPosts();
+    });
+
+    searchInput.addEventListener('input', fetchAndRenderPosts);
+    subcategoriaSelect.addEventListener('change', fetchAndRenderPosts);
+});
+</script>
 {% endblock %}

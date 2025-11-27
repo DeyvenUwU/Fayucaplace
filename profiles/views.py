@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from .models import Profile
 from .forms import NewProfileForm, EditProfileForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
@@ -54,6 +55,7 @@ def signIn(request):
             'error': 'El usuario o la contraseña no son correctos.'
         })
 
+@login_required
 def editProfile(request):
     profile = request.user.profile
 
@@ -67,6 +69,7 @@ def editProfile(request):
 
     return render(request, 'editProfile.html', {'form': form})
 
+@login_required
 def signOut(request):
     logout(request)
     return redirect('home')

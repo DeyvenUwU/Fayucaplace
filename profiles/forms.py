@@ -9,6 +9,54 @@ class NewProfileForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['email', 'username', 'password1', 'password2']
+        labels = {
+            'username': 'Nombre de usuario',
+            'password1': 'Contraseña',
+            'password2': 'Confirmar contraseña',
+        }
+        help_texts = {
+            'username': 'Requerido. 150 caracteres o menos. Solo letras, dígitos y @/./+/-/_ permitidos.',
+            'password1': 'Tu contraseña debe contener al menos 8 caracteres y no puede ser completamente numérica.',
+            'password2': 'Ingresa la misma contraseña para verificación.',
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Personalizar mensajes de error en español
+        self.fields['password1'].help_text = (
+            '<ul>'
+            '<li>Tu contraseña debe contener al menos 8 caracteres.</li>'
+            '<li>Tu contraseña no puede ser completamente numérica.</li>'
+            '<li>Tu contraseña no puede ser demasiado común.</li>'
+            '<li>Tu contraseña no puede ser muy similar a tu información personal.</li>'
+            '</ul>'
+        )
+        self.fields['password2'].help_text = 'Ingresa la misma contraseña para verificación.'
+        self.fields['username'].help_text = 'Requerido. 150 caracteres o menos. Solo letras, dígitos y @/./+/-/_ permitidos.'
+        
+        # Personalizar mensajes de error de validación
+        self.fields['username'].error_messages = {
+            'required': 'Este campo es obligatorio.',
+            'invalid': 'Ingresa un nombre de usuario válido.',
+            'unique': 'Este nombre de usuario ya está en uso.',
+        }
+        self.fields['email'].error_messages = {
+            'required': 'Este campo es obligatorio.',
+            'invalid': 'Ingresa un correo electrónico válido.',
+        }
+        self.fields['password1'].error_messages = {
+            'required': 'Este campo es obligatorio.',
+        }
+        self.fields['password2'].error_messages = {
+            'required': 'Este campo es obligatorio.',
+        }
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Las contraseñas no coinciden.')
+        return password2
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -28,43 +76,31 @@ class EditProfileForm(forms.ModelForm):
         required=True,
         label='Nombre de usuario'
     )
-    name = forms.CharField(
-        max_length=150,
-        required=False,
-        label='Nombre completo',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'})  # visible pero no editable
-    )
     email = forms.EmailField(
-        required=False,
-        label='Correo electrónico',
-        widget=forms.EmailInput(attrs={'readonly': 'readonly'})  # visible pero no editable
+        required=True,
+        label='Correo electrónico'
     )
 
     class Meta:
         model = Profile
-        fields = ['photo', 'username', 'name', 'phone', 'email']
+        fields = ['image', 'username', 'email']
         labels = {
-            'photo': 'Foto de perfil',
-            'phone': 'Teléfono',
+            'image': 'Foto de perfil',
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  # recibimos el usuario actual
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
         if user:
-            # Prellenar datos desde User y Profile
             self.fields['username'].initial = user.username
             self.fields['email'].initial = user.email
-            self.fields['name'].initial = self.instance.name
 
     def save(self, commit=True):
         profile = super().save(commit=False)
-
-        # Actualizar el username y el phone
         user = profile.user
         user.username = self.cleaned_data['username']
-        profile.phone = self.cleaned_data['phone']
+        user.email = self.cleaned_data['email']
 
         if commit:
             user.save()
