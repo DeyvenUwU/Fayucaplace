@@ -1,0 +1,56 @@
+{% extends 'baseDesing.html' %}
+{% block title %}Dashboard | FayucaPlace{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="h4 mb-4">Dashboard</h1>
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card p-3 shadow-sm"><strong>Total publicaciones</strong><div class="fs-4">{{ total_publicaciones }}</div></div></div>
+    <div class="col-md-3"><div class="card p-3 shadow-sm"><strong>Artículos</strong><div class="fs-4">{{ total_articulos }}</div></div></div>
+    <div class="col-md-3"><div class="card p-3 shadow-sm"><strong>Anuncios</strong><div class="fs-4">{{ total_anuncios }}</div></div></div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 mb-4">
+      <div class="card p-3 shadow-sm">
+        <h5 class="mb-3">Publicaciones por subcategoría</h5>
+        <canvas id="chartSubcategorias" height="240"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+      <div class="card p-3 shadow-sm">
+        <h5 class="mb-3">Publicaciones últimos 7 días</h5>
+        <canvas id="chartDias" height="240"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Usar JSON seguro con json_script para evitar errores de parseo.
+</script>
+{{ subcategoria_counts|json_script:'subcat-data' }}
+{{ series_dias|json_script:'dias-data' }}
+<script>
+const subcategoriaData = JSON.parse(document.getElementById('subcat-data').textContent);
+const diasData = JSON.parse(document.getElementById('dias-data').textContent);
+
+// Subcategorías
+const labelsSub = subcategoriaData.map(o=> o.subcategoria__nombre || 'Sin subcategoría');
+const valuesSub = subcategoriaData.map(o=> o.total);
+new Chart(document.getElementById('chartSubcategorias'), {
+  type:'bar',
+  data:{labels:labelsSub, datasets:[{label:'Publicaciones', data:valuesSub, backgroundColor:'#0d6efd'}]},
+  options:{responsive:true, plugins:{legend:{display:false}}}
+});
+
+// Días
+const labelsDias = diasData.map(o=> o.fecha);
+const valuesDias = diasData.map(o=> o.total);
+new Chart(document.getElementById('chartDias'), {
+  type:'line',
+  data:{labels:labelsDias, datasets:[{label:'Publicaciones', data:valuesDias, tension:0.3, borderColor:'#198754', backgroundColor:'rgba(25,135,84,0.3)'}]},
+  options:{responsive:true}
+});
+</script>
+{% endblock %}

@@ -1,17 +1,82 @@
-{% extends 'baseDesing.html' %}
+{% extends 'baseDesing.html'%}
+
+{% block title %}Anuncio: {{ post.titulo }} | FayucaPlace{% endblock %}
 
 {% block content %}
-    <h1>Detalles publicación</h1>
-
-    <h1>{{post.titulo}}</h1>
-    {% if post.imagen %}
-        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" width="200">
-    {% endif %}
-    <p>Anunciado por: {{post.idUsuario.username}}</p>
-    <button>Enviar mensaje</button>
-    <p>Detalles: {{post.descripcion}}</p>
-
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h4 fw-semibold mb-3">{{ post.titulo }}</h1>
+                {% if post.imagen %}
+                    <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="img-fluid rounded mb-3" style="max-height:320px;object-fit:cover;">
+                {% endif %}
+                <p class="small text-muted mb-2">Anunciado por <strong>{{ post.idUsuario.username }}</strong></p>
+                <p class="mb-3">{{ post.descripcion }}</p>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'sendMessage' post.id %}" class="btn btn-primary btn-sm">Enviar mensaje</a>
+                    {% if request.user == post.idUsuario %}
+                        <a href="{% url 'editPublication' post.id %}" class="btn btn-outline-secondary btn-sm">Editar</a>
+                        <button id="delete-btn" data-id="{{ post.id }}" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+const deleteBtn = document.getElementById('delete-btn');
+if (deleteBtn) {
+    deleteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (!confirm('¿Estás seguro de que quieres eliminar esta publicación?')) {
+            return;
+        }
+
+        const postId = this.dataset.id;
+        
+        fetch(`/api/publicaciones/${postId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = "{% url 'mainPanel' %}";
+            } else {
+                return response.json().then(data => {
+                    console.error('Error deleting post:', data);
+                    alert('Hubo un error al eliminar la publicación.');
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un problema de conexión al intentar eliminar la publicación.');
+        });
+    });
+}
+</script>
 {% endblock %}

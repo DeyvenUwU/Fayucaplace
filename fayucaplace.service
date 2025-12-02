@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn instance for Fayucaplace
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/Fayucaplace
+Environment="PATH=/home/ubuntu/Fayucaplace/venv/bin"
+Environment="DJANGO_SECRET_KEY=your_production_secret_key"
+Environment="DEBUG=False"
+Environment="ALLOWED_HOSTS=your-domain.com,www.your-domain.com"
+ExecStart=/home/ubuntu/Fayucaplace/venv/bin/gunicorn --config /home/ubuntu/Fayucaplace/gunicorn_config.py mysite.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

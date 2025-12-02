@@ -1,0 +1,120 @@
+{% extends 'baseDesing.html' %}
+{% block title %}Editar publicación | FayucaPlace{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="h5 mb-3">Editar publicación</h1>
+  <div id="error-container" class="text-danger small mb-2"></div>
+  <form id="edit-publication-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label" for="titulo">Título</label>
+      <input class="form-control" id="titulo" name="titulo" required>
+      <div id="error-titulo" class="text-danger small"></div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="descripcion">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required></textarea>
+      <div id="error-descripcion" class="text-danger small"></div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="imagen">Imagen (reemplazar opcional)</label>
+      <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+      <div id="error-imagen" class="text-danger small"></div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="subcategoria">Subcategoría (ID)</label>
+      <input type="number" class="form-control" id="subcategoria" name="subcategoria">
+      <div class="form-text">(Mantén vacío para dejar igual)</div>
+    </div>
+    <div id="tipo-extra" class="row g-3"></div>
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+      <button type="button" id="btn-delete" class="btn btn-outline-danger">Eliminar</button>
+      <a href="/mainpanel/" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script id="pub-id" type="application/json">{{ pub_id }}</script>
+<script>
+const pubId = parseInt(document.getElementById('pub-id').textContent, 10);
+
+// Obtener CSRF token del input hidden que genera {% csrf_token %}
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+async function cargar(){
+  const r = await fetch(`/api/publicaciones/${pubId}/`);
+  if(!r.ok){document.getElementById('error-container').textContent='No se pudo cargar la publicación.';return;}
+  const data = await r.json();
+  document.getElementById('titulo').value = data.titulo;
+  document.getElementById('descripcion').value = data.descripcion;
+  // Mostrar info tipo
+  const tipoDiv = document.getElementById('tipo-extra');
+  if(data.articulo){
+    tipoDiv.innerHTML = `<div class='col-md-6'><label class='form-label'>Precio</label><input id='precio' class='form-control' value='${data.articulo.precio}'></div><div class='col-md-6'><label class='form-label'>Cantidad</label><input id='cantidad' class='form-control' value='${data.articulo.cantidad}'></div>`;
+  } else if(data.anuncio){
+    tipoDiv.innerHTML = `<div class='col-md-6'><label class='form-label'>Fecha inicio</label><input type='date' id='fechaInicio' class='form-control' value='${data.anuncio.fechaInicio}'></div><div class='col-md-6'><label class='form-label'>Fecha fin</label><input type='date' id='fechaFin' class='form-control' value='${data.anuncio.fechaFin}'></div>`;
+  }
+}
+
+cargar();
+
+document.getElementById('edit-publication-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  document.getElementById('error-container').textContent = '';
+  
+  const fd = new FormData();
+  fd.append('titulo', document.getElementById('titulo').value);
+  fd.append('descripcion', document.getElementById('descripcion').value);
+  const subcat = document.getElementById('subcategoria').value;
+  if(subcat) fd.append('subcategoria', subcat);
+  const img = document.getElementById('imagen').files[0];
+  if(img) fd.append('imagen', img);
+  const precio = document.getElementById('precio');
+  const cantidad = document.getElementById('cantidad');
+  const fechaInicio = document.getElementById('fechaInicio');
+  const fechaFin = document.getElementById('fechaFin');
+  if(precio && cantidad){
+    fd.append('precio', precio.value);
+    fd.append('cantidad', cantidad.value);
+  } else if(fechaInicio && fechaFin){
+    fd.append('fechaInicio', fechaInicio.value);
+    fd.append('fechaFin', fechaFin.value);
+  }
+  
+  try {
+    const r = await fetch(`/api/publicaciones/${pubId}/`, {
+      method:'PATCH',
+      headers:{'X-CSRFToken': csrftoken},
+      body:fd
+    });
+    
+    if(r.ok) {
+      const data = await r.json();
+      // Redirigir según el tipo
+      if(data.articulo) {
+        window.location.href = `/article/${pubId}/`;
+      } else if(data.anuncio) {
+        window.location.href = `/ad/${pubId}/`;
+      } else {
+        window.location.href = `/mainpanel/`;
+      }
+    } else {
+      const errorData = await r.json();
+      console.error('Error response:', errorData);
+      document.getElementById('error-container').textContent = 'Error guardando cambios: ' + (errorData.detail || JSON.stringify(errorData));
+    }
+  } catch(error) {
+    console.error('Error:', error);
+    document.getElementById('error-container').textContent = 'Error de conexión al guardar cambios.';
+  }
+});
+
+document.getElementById('btn-delete').addEventListener('click', async () => {
+  if(!confirm('¿Eliminar publicación?')) return;
+  const r = await fetch(`/api/publicaciones/${pubId}/`, {method:'DELETE', headers:{'X-CSRFToken': csrftoken}});
+  if(r.status === 204){ window.location.href = '/mainpanel/'; } else { document.getElementById('error-container').textContent='No se pudo eliminar.'; }
+});
+</script>
+{% endblock %}

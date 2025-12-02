@@ -1,36 +1,35 @@
 {% extends 'baseDesing.html'%}
 {% load static %}
 
+{% block title %}Editar perfil | FayucaPlace{% endblock %}
+
 {% block content %}
-<h1>Editar perfil</h1>
-
-{% if error %}
-    <p style="color:red;">{{ error }}</p>
-{% endif %}
-
-<form action="/editprofile/" method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-
-    {% if user.profile.photo %}
-    <div class="text-center mb-3">
-        <img id="profile-preview" src="{{ user.profile.photo.url }}" 
-             alt="Foto de perfil" 
-             class="rounded-circle img-thumbnail" 
-             style="width: 150px; height: 150px; object-fit: cover;">
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h5 fw-semibold mb-3">Editar perfil</h1>
+                {% if error %}
+                    <div class="alert alert-danger py-2 mb-3">{{ error }}</div>
+                {% endif %}
+                <form action="/editprofile/" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                                <div class="text-center mb-3">
+                                    {% if user.profile.image %}
+                                        <img id="profile-preview" src="{{ user.profile.image.url }}" alt="Foto de perfil" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                    {% else %}
+                                        <img id="profile-preview" src="{% static 'img/default-profile.png' %}" alt="Foto de perfil por defecto" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                    {% endif %}
+                    </div>
+                    {{ form.as_p }}
+                    <div class="d-grid mt-2">
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    {% else %}
-    <div class="text-center mb-3">
-        <img id="profile-preview" src="{% static 'img/default-profile.png' %}" 
-             alt="Foto de perfil por defecto" 
-             class="rounded-circle img-thumbnail" 
-             style="width: 150px; height: 150px; object-fit: cover;">
-    </div>
-    {% endif %}
-
-  {{ form.as_p }}
-  <button type="submit">Guardar cambios</button>
-</form>
-
+</div>
 {% endblock %}
 
 {% block scripts %}

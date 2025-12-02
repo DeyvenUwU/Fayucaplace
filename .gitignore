@@ -1,6 +1,7 @@
 # Entorno virtual
 venv/
 env/
+venv.venvScriptsactivate/
 
 # Archivos de Django
 __pycache__/
@@ -8,8 +9,14 @@ __pycache__/
 *.pyo
 *.pyd
 db.sqlite3
+*.sqlite3
 /static/
 media/
+
+# Logs
+*.log
+django.log
+djangoproject.log
 
 # Configuración
 *.env
@@ -17,3 +24,17 @@ media/
 
 # Archivos de VS Code
 .vscode/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
