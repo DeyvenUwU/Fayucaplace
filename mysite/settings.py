@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
 DEBUG = True   # seguimos en desarrollo
 
 # ✔ Permite ngrok automáticamente
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok-free.dev']
 
 # ✔ Acepta CSRF desde ngrok
 CSRF_TRUSTED_ORIGINS = [
