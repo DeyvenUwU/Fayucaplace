@@ -12,15 +12,21 @@ db.sqlite3
 *.sqlite3
 /static/
 media/
+static_collected/
+static_root/
 
 # Logs
 *.log
 django.log
 djangoproject.log
+gunicorn.log
 
 # Configuración
 *.env
 .env
+.env.production
+.env.local
+.env.*.local
 
 # Archivos de VS Code
 .vscode/
@@ -38,3 +44,10 @@ htmlcov/
 .coverage.*
 coverage.xml
 *.cover
+
+# Archivos de producción
+.ngrok.pid
+*.backup.*
+
+# Archivos de seguridad
+bandit-report.json

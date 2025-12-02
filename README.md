@@ -70,6 +70,28 @@ export DATABASE_URL="postgres://user:pass@host:5432/fayuca"
 ## Deployment (producción)
 Ver [DEPLOYMENT.md](DEPLOYMENT.md) para checklist completo y comandos.
 
+### 🚀 Despliegue Rápido con ngrok (Windows)
+Para desarrollo y pruebas en producción local con ngrok:
+
+```powershell
+# 1. Verificar sistema
+.\check_system.ps1
+
+# 2. Despliegue automático (recomendado)
+.\deploy.ps1
+
+# O despliegue manual (2 terminales):
+# Terminal 1: Iniciar ngrok
+.\start_ngrok.ps1
+
+# Terminal 2: Iniciar servidor
+.\start_production.ps1
+```
+
+**📖 Guías de despliegue:**
+- [QUICKSTART.md](QUICKSTART.md) - Inicio rápido en 3 pasos
+- [PRODUCTION_DEPLOYMENT.md](PRODUCTION_DEPLOYMENT.md) - Guía completa de producción
+
 ### Quick start con Gunicorn + Nginx (Linux)
 ```bash
 # 1. Instalar dependencias sistema

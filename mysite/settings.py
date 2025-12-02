@@ -12,18 +12,31 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # SECURITY
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
 
-DEBUG = True   # seguimos en desarrollo
+# DEBUG: False en producción, True en desarrollo
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# ✔ Permite ngrok automáticamente
-ALLOWED_HOSTS = ['*']
+# ✔ Permite ngrok y localhost
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.ngrok-free.app,.ngrok.io').split(',')
 
 # ✔ Acepta CSRF desde ngrok
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'https://*.ngrok-free.app',
-    'https://*.ngrok-free.dev'
+    'https://*.ngrok-free.dev',
+    'https://*.ngrok.io',
 ]
+
+# Agregar la URL de ngrok dinámicamente si existe
+NGROK_URL = os.environ.get('NGROK_URL')
+if NGROK_URL:
+    if NGROK_URL not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(NGROK_URL)
+    # Extraer el host de la URL
+    from urllib.parse import urlparse
+    parsed = urlparse(NGROK_URL)
+    if parsed.netloc and parsed.netloc not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(parsed.netloc)
 
 # APLICACIONES
 INSTALLED_APPS = [
