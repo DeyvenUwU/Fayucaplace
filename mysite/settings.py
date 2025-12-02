@@ -15,28 +15,34 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
 # DEBUG: False en producción, True en desarrollo
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# ✔ Permite ngrok y localhost
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.ngrok-free.app,.ngrok.io').split(',')
+# ✔ Permite ngrok, localhost y servicios cloud (Render, Railway, etc.)
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.ngrok-free.app,.ngrok.io,.onrender.com,.railway.app').split(',')
 
-# ✔ Acepta CSRF desde ngrok
+# ✔ Acepta CSRF desde ngrok y servicios cloud
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'https://*.ngrok-free.app',
     'https://*.ngrok-free.dev',
     'https://*.ngrok.io',
+    'https://*.onrender.com',
+    'https://*.railway.app',
+    'https://*.fly.dev',
 ]
 
-# Agregar la URL de ngrok dinámicamente si existe
+# Agregar URLs dinámicamente si existen
 NGROK_URL = os.environ.get('NGROK_URL')
-if NGROK_URL:
-    if NGROK_URL not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(NGROK_URL)
-    # Extraer el host de la URL
-    from urllib.parse import urlparse
-    parsed = urlparse(NGROK_URL)
-    if parsed.netloc and parsed.netloc not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(parsed.netloc)
+RENDER_EXTERNAL_URL = os.environ.get('RENDER_EXTERNAL_URL')
+
+for url in [NGROK_URL, RENDER_EXTERNAL_URL]:
+    if url:
+        if url not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(url)
+        # Extraer el host de la URL
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        if parsed.netloc and parsed.netloc not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(parsed.netloc)
 
 # APLICACIONES
 INSTALLED_APPS = [
@@ -64,6 +70,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Sirve archivos estáticos en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,12 +99,26 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # ✔ Base de datos
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Soporta DATABASE_URL para servicios cloud (Render, Railway, etc.)
+import dj_database_url
+
+if os.environ.get('DATABASE_URL'):
+    # Producción: usar PostgreSQL de Render/Railway
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Desarrollo: usar SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # PASSWORD
 AUTH_PASSWORD_VALIDATORS = [
@@ -119,5 +140,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_collected')
+
+# WhiteNoise configuration para servir archivos estáticos eficientemente
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
