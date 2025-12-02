@@ -19,9 +19,20 @@ SECRET_KEY = 'django-insecure-fnng%qynlgdu#9*@3kybychnm=4t))#o(mlw$@n(ey##)cv9g7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', '.ngrok-free.app', '.ngrok-free.dev', '.ngrok.io', 'localhost', '127.0.0.1', 'attackable-unsumptuously-maryln.ngrok-free.dev']
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Security settings for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app',
+    'https://*.ngrok-free.dev',
+    'https://*.ngrok.io',
+    'https://attackable-unsumptuously-maryln.ngrok-free.dev',
+]
+
+# Configuración para que funcione detrás de proxy (nginx)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 INSTALLED_APPS = [
