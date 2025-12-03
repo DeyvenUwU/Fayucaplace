@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 from django.contrib import admin
 from django.urls import path, include
 from profiles import views as profileViews
@@ -48,7 +47,6 @@ urlpatterns += [
 ]
 
 # También mantener la configuración anterior para DEBUG=True
-=======
 from django.contrib import admin
 from django.urls import path, include
 from profiles import views as profileViews
@@ -87,8 +85,6 @@ urlpatterns = [
 ]
 
 
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
-=======
 from django.contrib import admin
 from django.urls import path, include
 from profiles import views as profileViews
@@ -127,5 +123,4 @@ urlpatterns = [
 ]
 
 
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
