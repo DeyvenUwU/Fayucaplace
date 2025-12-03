@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -20,7 +19,6 @@ class Profile(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-=======
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -40,8 +38,7 @@ class Profile(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
-=======
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -61,4 +58,3 @@ class Profile(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
