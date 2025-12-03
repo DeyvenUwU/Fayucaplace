@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -53,7 +52,7 @@ class Anuncio(models.Model):
     fechaInicio = models.DateField()
     fechaFin = models.DateField()
 
-=======
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -100,8 +99,7 @@ class Anuncio(models.Model):
     fechaInicio = models.DateField()
     fechaFin = models.DateField()
 
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
-=======
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -147,5 +145,3 @@ class Anuncio(models.Model):
     idPublicacion = models.OneToOneField(Publicacion, on_delete=models.CASCADE, related_name='anuncio')
     fechaInicio = models.DateField()
     fechaFin = models.DateField()
-
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
