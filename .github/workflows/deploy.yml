@@ -29,8 +29,7 @@ jobs:
 
   deploy:
     needs: test
-    runs-on: self-hosted
-    labels: [ "prod-wsl" ]
+    runs-on: [self-hosted, prod-wsl]
     steps:
       - name: Execute deploy script on WSL
         run: |
