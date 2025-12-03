@@ -1,0 +1,120 @@
+{% extends 'baseDesing.html'%}
+
+{% block content %}
+<h1>Editar anuncio</h1>
+
+<div id="error-container" style="color: red;"></div>
+
+<form id="edit-ad-form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="id_titulo">Título</label>
+        <input type="text" name="titulo" id="id_titulo" value="{{ form.instance.titulo }}" required>
+        <div id="error-titulo" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_descripcion">Descripción</label>
+        <textarea name="descripcion" id="id_descripcion" required>{{ form.instance.descripcion }}</textarea>
+        <div id="error-descripcion" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_fechaInicio">Fecha de inicio</label>
+        <input type="date" name="fechaInicio" id="id_fechaInicio" value="{{ form.anuncio_instance.fechaInicio|date:'Y-m-d' }}" required>
+        <div id="error-fechaInicio" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_fechaFin">Fecha de fin</label>
+        <input type="date" name="fechaFin" id="id_fechaFin" value="{{ form.anuncio_instance.fechaFin|date:'Y-m-d' }}" required>
+        <div id="error-fechaFin" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_imagen">Imagen</label>
+        {% if form.instance.imagen %}
+            <p>Imagen actual: <img src="{{ form.instance.imagen.url }}" alt="{{ form.instance.titulo }}" width="100"></p>
+        {% endif %}
+        <input type="file" name="imagen" id="id_imagen" accept="image/*">
+        <div id="error-imagen" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_estado">Estado</label>
+        <select name="estado" id="id_estado" required>
+            <option value="ACTIVA" {% if form.instance.estado == 'ACTIVA' %}selected{% endif %}>Activa</option>
+            <option value="PAUSADA" {% if form.instance.estado == 'PAUSADA' %}selected{% endif %}>Pausada</option>
+        </select>
+        <div id="error-estado" class="error-message"></div>
+    </div>
+
+    <button type="submit">Guardar cambios</button>
+    <a href="{% url 'adDetails' post.id %}" class="btn">Cancelar</a>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Form submission logic
+    const form = document.getElementById('edit-ad-form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const postId = "{{ post.id }}";
+
+        fetch(`/api/publicaciones/${postId}/`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = `/ad/${postId}/`;
+            } else {
+                return response.json().then(errors => {
+                    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                    document.getElementById('error-container').textContent = '';
+
+                    for (const key in errors) {
+                        const errorElement = document.getElementById(`error-${key}`);
+                        if (errorElement) {
+                            errorElement.textContent = errors[key].join(', ');
+                        }
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        document.getElementById('error-container').textContent = 'Error al actualizar: ' + JSON.stringify(errors);
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('error-container').textContent = 'Error de conexión al actualizar el anuncio.';
+        });
+    });
+});
+</script>
+{% endblock %}

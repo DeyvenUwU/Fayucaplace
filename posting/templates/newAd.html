@@ -1,3 +1,157 @@
+<<<<<<< HEAD
+{% extends 'baseDesing.html'%}
+
+{% block content %}
+<h1>Nuevo anuncio</h1>
+
+<div id="error-container" style="color: red;"></div>
+
+<form id="new-ad-form">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="id_titulo">Título</label>
+        <input type="text" name="titulo" id="id_titulo" required>
+        <div id="error-titulo" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_descripcion">Descripción</label>
+        <textarea name="descripcion" id="id_descripcion" required></textarea>
+        <div id="error-descripcion" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_fechaInicio">Fecha de inicio</label>
+        <input type="date" name="fechaInicio" id="id_fechaInicio" required>
+        <div id="error-fechaInicio" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_fechaFin">Fecha de fin</label>
+        <input type="date" name="fechaFin" id="id_fechaFin" required>
+        <div id="error-fechaFin" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_imagen">Imagen</label>
+        <input type="file" name="imagen" id="id_imagen" accept="image/*">
+        <div id="error-imagen" class="error-message"></div>
+    </div>
+
+    <button type="submit">Publicar</button>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Dependent dropdown logic (solo si existen los selects en la página)
+    const categoriaSelect = document.getElementById('categoria');
+    const subcategoriaSelect = document.getElementById('subcategoria');
+
+    if (categoriaSelect && subcategoriaSelect) {
+        categoriaSelect.addEventListener('change', async function() {
+            const categoriaId = this.value;
+            subcategoriaSelect.innerHTML = '<option value="">Cargando...</option>';
+            subcategoriaSelect.disabled = true;
+
+            if (!categoriaId) {
+                subcategoriaSelect.innerHTML = '<option value="-- Selecciona una categoría primero --</option>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/subcategorias/?categoria=${categoriaId}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const subcategorias = await response.json();
+
+                subcategoriaSelect.innerHTML = '<option value="">---------</option>';
+                subcategorias.forEach(sub => subcategoriaSelect.add(new Option(sub.nombre, sub.id)));
+                subcategoriaSelect.disabled = false;
+            } catch (error) {
+                console.error('Error fetching subcategories:', error);
+                subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+            }
+        });
+    }
+
+    // AJAX form submission logic
+    const form = document.getElementById('new-ad-form');
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formDataMultipart = new FormData();
+        formDataMultipart.append('titulo', document.getElementById('id_titulo').value);
+        formDataMultipart.append('descripcion', document.getElementById('id_descripcion').value);
+        // Adjuntar subcategoría solo si existe el campo
+        const subcategoriaElem = document.getElementById('subcategoria');
+        if (subcategoriaElem) {
+            formDataMultipart.append('subcategoria', subcategoriaElem.value);
+        }
+        formDataMultipart.append('fechaInicio', document.getElementById('id_fechaInicio').value);
+        formDataMultipart.append('fechaFin', document.getElementById('id_fechaFin').value);
+        
+        const imagenInput = document.getElementById('id_imagen');
+        if (imagenInput.files.length > 0) {
+            formDataMultipart.append('imagen', imagenInput.files[0]);
+        }
+
+        try {
+            const response = await fetch('/api/publicaciones/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                body: formDataMultipart
+            });
+
+            if (response.ok) {
+                const newPublicacion = await response.json();
+                window.location.href = `/ad/${newPublicacion.id}/`;
+            } else {
+                const errors = await response.json();
+                // Clear previous errors
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                document.getElementById('error-container').textContent = '';
+
+                for (const key in errors) {
+                    if (key === 'anuncio') {
+                        for (const anuncioKey in errors.anuncio) {
+                            const errorDiv = document.getElementById(`error-${anuncioKey}`);
+                            if(errorDiv) errorDiv.textContent = errors.anuncio[anuncioKey].join(' ');
+                        }
+                    } else {
+                        const errorDiv = document.getElementById(`error-${key}`);
+                        if(errorDiv) errorDiv.textContent = errors[key].join(' ');
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            document.getElementById('error-container').textContent = 'Ocurrió un error al enviar el formulario.';
+        }
+    });
+});
+</script>
+=======
 {% extends 'baseDesing.html'%}
 
 {% block content %}
@@ -162,4 +316,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+>>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
 {% endblock %}

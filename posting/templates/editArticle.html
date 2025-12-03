@@ -1,0 +1,188 @@
+{% extends 'baseDesing.html'%}
+
+{% block content %}
+<h1>Editar artículo</h1>
+
+<div id="error-container" style="color: red;"></div>
+
+<form id="edit-article-form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="id_titulo">Título</label>
+        <input type="text" name="titulo" id="id_titulo" value="{{ form.instance.titulo }}" required>
+        <div id="error-titulo" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_descripcion">Descripción</label>
+        <textarea name="descripcion" id="id_descripcion" required>{{ form.instance.descripcion }}</textarea>
+        <div id="error-descripcion" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_precio">Precio</label>
+        <input type="number" name="precio" id="id_precio" step="0.01" value="{{ form.articulo_instance.precio }}" required>
+        <div id="error-precio" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_cantidad">Cantidad</label>
+        <input type="number" name="cantidad" id="id_cantidad" value="{{ form.articulo_instance.cantidad }}" required>
+        <div id="error-cantidad" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_condicion">Condición</label>
+        <select name="condicion" id="id_condicion" required>
+            <option value="NUEVO" {% if form.articulo_instance.condicion == 'NUEVO' %}selected{% endif %}>Nuevo</option>
+            <option value="USADO" {% if form.articulo_instance.condicion == 'USADO' %}selected{% endif %}>Usado</option>
+        </select>
+        <div id="error-condicion" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_imagen">Imagen</label>
+        {% if form.instance.imagen %}
+            <p>Imagen actual: <img src="{{ form.instance.imagen.url }}" alt="{{ form.instance.titulo }}" width="100"></p>
+        {% endif %}
+        <input type="file" name="imagen" id="id_imagen" accept="image/*">
+        <div id="error-imagen" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="id_estado">Estado</label>
+        <select name="estado" id="id_estado" required>
+            <option value="ACTIVA" {% if form.instance.estado == 'ACTIVA' %}selected{% endif %}>Activa</option>
+            <option value="PAUSADA" {% if form.instance.estado == 'PAUSADA' %}selected{% endif %}>Pausada</option>
+        </select>
+        <div id="error-estado" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="categoria">Categoría</label>
+        <select id="categoria" name="categoria" class="form-control" required>
+            <option value="" selected>---------</option>
+            {% for categoria in categorias %}
+            <option value="{{ categoria.id }}" {% if categoria.id == form.articulo_instance.categoria.id %}selected{% endif %}>{{ categoria.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="subcategoria">Subcategoría</label>
+        <select id="subcategoria" name="subcategoria" class="form-control" required>
+            <option value="">-- Selecciona una categoría --</option>
+        </select>
+        <div id="error-subcategoria" class="error-message"></div>
+    </div>
+
+    <button type="submit">Guardar cambios</button>
+    <a href="{% url 'articleDetails' post.id %}" class="btn">Cancelar</a>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Dependent dropdown logic
+    const categoriaSelect = document.getElementById('categoria');
+    const subcategoriaSelect = document.getElementById('subcategoria');
+    const currentSubcategoriaId = "{{ form.articulo_instance.subCategoria.id }}";
+
+    async function loadSubcategorias(categoriaId, selectSubcategoriaId = null) {
+        subcategoriaSelect.innerHTML = '<option value="">Cargando...</option>';
+
+        if (!categoriaId) {
+            subcategoriaSelect.innerHTML = '<option value="">-- Selecciona una categoría primero --</option>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/subcategorias/?categoria=${categoriaId}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const subcategorias = await response.json();
+
+            subcategoriaSelect.innerHTML = '<option value="">---------</option>';
+            subcategorias.forEach(sub => {
+                const option = new Option(sub.nombre, sub.id);
+                if (selectSubcategoriaId && sub.id == selectSubcategoriaId) {
+                    option.selected = true;
+                }
+                subcategoriaSelect.add(option);
+            });
+        } catch (error) {
+            console.error('Error fetching subcategories:', error);
+            subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+        }
+    }
+
+    // Cargar subcategorías inicial
+    if (categoriaSelect.value) {
+        loadSubcategorias(categoriaSelect.value, currentSubcategoriaId);
+    }
+
+    categoriaSelect.addEventListener('change', function() {
+        loadSubcategorias(this.value);
+    });
+
+    // Form submission logic
+    const form = document.getElementById('edit-article-form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const postId = "{{ post.id }}";
+
+        fetch(`/api/publicaciones/${postId}/`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = `/article/${postId}/`;
+            } else {
+                return response.json().then(errors => {
+                    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                    document.getElementById('error-container').textContent = '';
+
+                    for (const key in errors) {
+                        const errorElement = document.getElementById(`error-${key}`);
+                        if (errorElement) {
+                            errorElement.textContent = errors[key].join(', ');
+                        }
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        document.getElementById('error-container').textContent = 'Error al actualizar: ' + JSON.stringify(errors);
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('error-container').textContent = 'Error de conexión al actualizar el artículo.';
+        });
+    });
+});
+</script>
+{% endblock %}

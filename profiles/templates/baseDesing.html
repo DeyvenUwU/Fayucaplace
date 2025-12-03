@@ -1,3 +1,35 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+      {% if user.is_authenticated%}
+        <li><a href="/mainpanel">Pagina principal</a></li>
+        <li><a href="/chat">Mensajes</a></li>
+        <li><a href="/buy">Comprar</a></li>
+        <li><a href="/newarticle">Vender</a></li>
+        <li><a href="/newad">Anunciar</a></li>
+        <li><a href="/mypublications">Mis publicaciones</a></li>
+        <li><a href="/editprofile">Editar perfil</a></li>
+        <li><a href="/logout">Cerrar sesión</a></li>
+      {% else %}
+        <li><a href="/signup">Crear cuenta</a></li>
+        <li><a href="/login">Ingresar</a></li>
+      {% endif %}
+    </nav>
+
+    {% block content %} 
+    {% endblock %}
+
+    {% block scripts %}
+    {% endblock %}
+</body>
+=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,4 +60,5 @@
     {% block scripts %}
     {% endblock %}
 </body>
+>>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
 </html>
