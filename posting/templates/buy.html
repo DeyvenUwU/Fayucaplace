@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 {% extends 'baseDesing.html' %}
 
 {% block content %}
@@ -186,6 +187,126 @@ document.addEventListener('DOMContentLoaded', function() {
     ordenarSelect.addEventListener('change', fetchAndRenderPosts);
 });
 </script>
+=======
+{% extends 'baseDesing.html' %}
+
+{% block content %}
+<h1>Comprar artículos</h1>
+
+<div class="filters">
+    <input type="text" id="search" placeholder="Buscar por título...">
+    <select id="categoria">
+        <option value="">Todas las categorías</option>
+        {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+        {% endfor %}
+    </select>
+    <select id="subcategoria" disabled>
+        <option value="">Todas las subcategorías</option>
+    </select>
+</div>
+
+<ul id="post-list">
+    {% for p in posts %}
+        <li>
+            <a href="{% url 'articleDetails' p.id %}">
+                {% if p.imagen %}
+                    <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}" width="200">
+                {% endif %}
+                
+                <h2>{{ p.titulo }}</h2>                
+                {% if p.articulo %}
+                    <p>${{ p.articulo.precio }}</p>
+                {% endif %}
+            </a>
+        </li>
+    {% empty %}
+        <li>No hay publicaciones disponibles.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search');
+    const categoriaSelect = document.getElementById('categoria');
+    const subcategoriaSelect = document.getElementById('subcategoria');
+    const postList = document.getElementById('post-list');
+
+    async function fetchAndRenderPosts() {
+        let url = '/api/publicaciones/?';
+        const searchTerm = searchInput.value;
+        const subcategoriaId = subcategoriaSelect.value;
+
+        if (searchTerm) {
+            url += `search=${searchTerm}&`;
+        }
+        if (subcategoriaId) {
+            url += `subcategoria=${subcategoriaId}&`;
+        }
+
+        // We only want to show articles, so we filter by publications that have an article
+        url += `articulo__isnull=false`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const posts = await response.json();
+
+            postList.innerHTML = '';
+            if (posts.length > 0) {
+                posts.forEach(post => {
+                    const postElement = document.createElement('li');
+                    let postContent = `
+                        <a href="/article/${post.id}/">
+                            ${post.imagen ? `<img src="${post.imagen}" alt="${post.titulo}" width="200">` : ''}
+                            <h2>${post.titulo}</h2>
+                            ${post.articulo ? `<p>$${post.articulo.precio}</p>` : ''}
+                        </a>
+                    `;
+                    postElement.innerHTML = postContent;
+                    postList.appendChild(postElement);
+                });
+            } else {
+                postList.innerHTML = '<li>No hay publicaciones que coincidan con los filtros.</li>';
+            }
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+            postList.innerHTML = '<li>Ocurrió un error al cargar las publicaciones.</li>';
+        }
+    }
+
+    categoriaSelect.addEventListener('change', async function() {
+        const categoriaId = this.value;
+        subcategoriaSelect.innerHTML = '<option value="">Todas las subcategorías</option>';
+        subcategoriaSelect.disabled = true;
+
+        if (!categoriaId) {
+            fetchAndRenderPosts();
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/subcategorias/?categoria=${categoriaId}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const subcategorias = await response.json();
+
+            subcategorias.forEach(sub => subcategoriaSelect.add(new Option(sub.nombre, sub.id)));
+            subcategoriaSelect.disabled = false;
+        } catch (error) {
+            console.error('Error fetching subcategories:', error);
+            subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+        }
+        fetchAndRenderPosts();
+    });
+
+    searchInput.addEventListener('input', fetchAndRenderPosts);
+    subcategoriaSelect.addEventListener('change', fetchAndRenderPosts);
+});
+</script>
+>>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
 =======
 {% extends 'baseDesing.html' %}
 

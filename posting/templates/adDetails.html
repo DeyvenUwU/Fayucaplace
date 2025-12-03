@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 {% extends 'baseDesing.html'%}
 
 {% block content %}
@@ -75,6 +76,24 @@ if (deleteBtn) {
     });
 }
 </script>
+=======
+{% extends 'baseDesing.html'%}
+
+{% block content %}
+    <h1>Detalles publicación</h1>
+
+    <h1>{{post.titulo}}</h1>
+    {% if post.imagen %}
+        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" width="200">
+    {% endif %}
+    <p>Anunciado por: {{post.idUsuario.username}}</p>
+    <a href="{% url 'sendMessage' post.id %}" class="btn">Enviar mensaje</a>
+    <p>Detalles: {{post.descripcion}}</p>
+
+{% endblock %}
+
+{% block scripts %}
+>>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
 =======
 {% extends 'baseDesing.html'%}
 
