@@ -1,83 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-{% extends 'baseDesing.html'%}
-
-{% block content %}
-
-<h1>Esta semana...</h1>
-
-<h1>Anuncios</h1>
-
-<div class="filters">
-    <input type="text" id="search" placeholder="Buscar por título...">
-</div>
-
-<ul id="post-list">
-    {% for p in posts %}
-        <li>
-            <a href="{% url 'adDetails' p.id %}">
-                {% if p.imagen %}
-                    <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}" width="200">
-                {% endif %}
-                
-                <h2>{{ p.titulo }}</h2>                
-            </a>
-        </li>
-    {% empty %}
-        <li>No hay anuncios</li>
-    {% endfor %}
-</ul>
-
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search');
-    const postList = document.getElementById('post-list');
-
-    async function fetchAndRenderPosts() {
-        let url = '/api/publicaciones/?';
-        const searchTerm = searchInput.value;
-
-        if (searchTerm) {
-            url += `search=${searchTerm}&`;
-        }
-
-        // We only want to show ads, so we filter by publications that have an ad
-        url += `anuncio__isnull=false`;
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const posts = await response.json();
-
-            postList.innerHTML = '';
-            if (posts.length > 0) {
-                posts.forEach(post => {
-                    const postElement = document.createElement('li');
-                    let postContent = `
-                        <a href="/ad/${post.id}/">
-                            ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" width="200">` : ''}
-                            <h2>${post.titulo}</h2>
-                        </a>
-                    `;
-                    postElement.innerHTML = postContent;
-                    postList.appendChild(postElement);
-                });
-            } else {
-                postList.innerHTML = '<li>No hay anuncios que coincidan con los filtros.</li>';
-            }
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-            postList.innerHTML = '<li>Ocurrió un error al cargar los anuncios.</li>';
-        }
-    }
-
-    searchInput.addEventListener('input', fetchAndRenderPosts);
-});
-</script>
-=======
 {% extends 'baseDesing.html'%}
 
 {% block content %}
@@ -195,8 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
     subcategoriaSelect.addEventListener('change', fetchAndRenderPosts);
 });
 </script>
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
-=======
 {% extends 'baseDesing.html'%}
 
 {% block content %}
@@ -314,5 +232,4 @@ document.addEventListener('DOMContentLoaded', function() {
     subcategoriaSelect.addEventListener('change', fetchAndRenderPosts);
 });
 </script>
->>>>>>> f271bf24dfb35a8596c07af58ada957384fefd36
 {% endblock %}
