@@ -1,10 +1,110 @@
 {% extends 'baseDesing.html'%}
+{% load static %}
+
+{% block title %}Fayucaplace - Inicio{% endblock %}
 
 {% block content %}
 
-<h1>Inicio</h1>
+<!-- Hero Section -->
+<div class="hero-section text-center py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 0.5rem; margin-bottom: 4rem;">
+    <div class="container py-5">
+        <h1 class="display-3 fw-bold mb-3">Bienvenido a FayucaPlace</h1>
+        <p class="lead mb-4">Compra, vende y anuncia productos locales con una experiencia sencilla y moderna.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="/buy" class="btn btn-light btn-lg fw-bold">
+                <i class="bi bi-search"></i> Explorar productos
+            </a>
+            <a href="/newarticle" class="btn btn-outline-light btn-lg fw-bold">
+                <i class="bi bi-pencil"></i> Publicar artículo
+            </a>
+            <a href="/newad" class="btn btn-outline-light btn-lg fw-bold">
+                <i class="bi bi-megaphone"></i> Crear anuncio
+            </a>
+        </div>
+    </div>
+</div>
 
-{% endblock %}
+<!-- Features Section -->
+<div class="features-section mb-5">
+    <div class="row g-4">
+        <!-- Feature 1 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-shield-check" style="font-size: 2.5rem; color: #0d6efd;"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3">Seguridad</h5>
+                    <p class="card-text text-muted">
+                        Operaciones mediante cuentas verificadas y control básico de sesiones.
+                    </p>
+                </div>
+            </div>
+        </div>
 
-{% block scripts %}
+        <!-- Feature 2 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-funnel" style="font-size: 2.5rem; color: #198754;"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3">Filtros</h5>
+                    <p class="card-text text-muted">
+                        Filtra por categoría y subcategoría para encontrar lo que buscas rápido.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-chat-dots" style="font-size: 2.5rem; color: #fd7e14;"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3">Mensajería</h5>
+                    <p class="card-text text-muted">
+                        Comunícate con otros usuarios para concretar tus compras y ventas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-section py-5 mb-5" style="background-color: #f8f9fa; border-radius: 0.5rem;">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <h3 class="display-5 fw-bold" style="color: #0d6efd;">500+</h3>
+                <p class="text-muted">Usuarios activos</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h3 class="display-5 fw-bold" style="color: #198754;">1000+</h3>
+                <p class="text-muted">Publicaciones</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h3 class="display-5 fw-bold" style="color: #fd7e14;">100+</h3>
+                <p class="text-muted">Categorías</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h3 class="display-5 fw-bold" style="color: #dc3545;">24/7</h3>
+                <p class="text-muted">Disponible</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section text-center py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 0.5rem;">
+    <div class="container">
+        <h2 class="mb-3">¿Listo para empezar?</h2>
+        <p class="lead mb-4">Únete a nuestra comunidad y comienza a comprar y vender hoy mismo.</p>
+        <a href="/signup" class="btn btn-light btn-lg fw-bold">Crear cuenta gratuita</a>
+    </div>
+</div>
+
 {% endblock %}

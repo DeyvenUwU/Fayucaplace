@@ -1,74 +1,111 @@
 {% extends 'baseDesing.html'%}
 
 {% block content %}
-<h1>Nueva publicación</h1>
-
-<div id="error-container" style="color: red;"></div>
-
-<form id="new-article-form">
-    {% csrf_token %}
-
-    <div class="form-group">
-        <label for="id_titulo">Título</label>
-        <input type="text" name="titulo" id="id_titulo" required>
-        <div id="error-titulo" class="error-message"></div>
+<div class="py-5">
+    <!-- Header -->
+    <div class="mb-5 pb-4 border-bottom">
+        <h1 class="display-4 fw-bold mb-2"><i class="bi bi-plus-circle me-3" style="color: #0d6efd;"></i>Nueva publicación</h1>
+        <p class="text-muted">Comparte tu artículo y conecta con compradores</p>
     </div>
 
-    <div class="form-group">
-        <label for="id_descripcion">Descripción</label>
-        <textarea name="descripcion" id="id_descripcion" required></textarea>
-        <div id="error-descripcion" class="error-message"></div>
+    <!-- Alertas de Error -->
+    <div id="error-container"></div>
+
+    <!-- Formulario -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <form id="new-article-form">
+                        {% csrf_token %}
+
+                        <!-- Título -->
+                        <div class="mb-4">
+                            <label for="id_titulo" class="form-label fw-bold"><i class="bi bi-pencil me-2" style="color: #0d6efd;"></i>Título *</label>
+                            <input type="text" name="titulo" id="id_titulo" class="form-control form-control-lg" placeholder="Ej: iPhone 12 Pro" required>
+                            <div id="error-titulo" class="text-danger small mt-2"></div>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <label for="id_descripcion" class="form-label fw-bold"><i class="bi bi-card-text me-2" style="color: #0d6efd;"></i>Descripción *</label>
+                            <textarea name="descripcion" id="id_descripcion" class="form-control" rows="5" placeholder="Describe los detalles, condición, características principales..." required></textarea>
+                            <div id="error-descripcion" class="text-danger small mt-2"></div>
+                        </div>
+
+                        <!-- Precio y Cantidad en fila -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_precio" class="form-label fw-bold"><i class="bi bi-cash-coin me-2" style="color: #0d6efd;"></i>Precio *</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-0">$</span>
+                                    <input type="number" name="precio" id="id_precio" class="form-control" step="0.01" placeholder="0.00" required>
+                                </div>
+                                <div id="error-precio" class="text-danger small mt-2"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_cantidad" class="form-label fw-bold"><i class="bi bi-box me-2" style="color: #0d6efd;"></i>Cantidad *</label>
+                                <div class="input-group input-group-lg">
+                                    <input type="number" name="cantidad" id="id_cantidad" class="form-control" placeholder="1" required>
+                                    <span class="input-group-text bg-light border-0">unidades</span>
+                                </div>
+                                <div id="error-cantidad" class="text-danger small mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Condición -->
+                        <div class="mb-4">
+                            <label for="id_condicion" class="form-label fw-bold"><i class="bi bi-star me-2" style="color: #0d6efd;"></i>Condición *</label>
+                            <select name="condicion" id="id_condicion" class="form-select form-select-lg" required>
+                                <option value="">-- Selecciona una condición --</option>
+                                <option value="NUEVO">✨ Nuevo</option>
+                                <option value="USADO">↻ Usado</option>
+                            </select>
+                            <div id="error-condicion" class="text-danger small mt-2"></div>
+                        </div>
+
+                        <!-- Categoría y Subcategoría -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="categoria" class="form-label fw-bold"><i class="bi bi-tag me-2" style="color: #0d6efd;"></i>Categoría *</label>
+                                <select id="categoria" name="categoria" class="form-select form-select-lg" required>
+                                    <option value="" selected>-- Selecciona una categoría --</option>
+                                    {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="subcategoria" class="form-label fw-bold"><i class="bi bi-collection me-2" style="color: #0d6efd;"></i>Subcategoría *</label>
+                                <select id="subcategoria" name="subcategoria" class="form-select form-select-lg" disabled required>
+                                    <option value="">-- Selecciona una categoría primero --</option>
+                                </select>
+                                <div id="error-subcategoria" class="text-danger small mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Imagen -->
+                        <div class="mb-5">
+                            <label for="id_imagen" class="form-label fw-bold"><i class="bi bi-image me-2" style="color: #0d6efd;"></i>Imagen (opcional)</label>
+                            <div class="input-group">
+                                <input type="file" name="imagen" id="id_imagen" class="form-control form-control-lg" accept="image/*">
+                                <label class="input-group-text bg-light"><i class="bi bi-cloud-arrow-up"></i></label>
+                            </div>
+                            <small class="text-muted d-block mt-2">Formato: JPG, PNG. Tamaño máximo: 5MB</small>
+                            <div id="error-imagen" class="text-danger small mt-2"></div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
+                            <button type="reset" class="btn btn-lg btn-outline-secondary"><i class="bi bi-arrow-clockwise me-2"></i>Limpiar</button>
+                            <button type="submit" class="btn btn-lg btn-primary"><i class="bi bi-check-circle me-2"></i>Publicar artículo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="id_precio">Precio</label>
-        <input type="number" name="precio" id="id_precio" step="0.01" required>
-        <div id="error-precio" class="error-message"></div>
-    </div>
-
-    <div class="form-group">
-        <label for="id_cantidad">Cantidad</label>
-        <input type="number" name="cantidad" id="id_cantidad" required>
-        <div id="error-cantidad" class="error-message"></div>
-    </div>
-
-    <div class="form-group">
-        <label for="id_condicion">Condición</label>
-        <select name="condicion" id="id_condicion" required>
-            <option value="">---------</option>
-            <option value="NUEVO">Nuevo</option>
-            <option value="USADO">Usado</option>
-        </select>
-        <div id="error-condicion" class="error-message"></div>
-    </div>
-
-    <div class="form-group">
-        <label for="id_imagen">Imagen</label>
-        <input type="file" name="imagen" id="id_imagen" accept="image/*">
-        <div id="error-imagen" class="error-message"></div>
-    </div>
-
-    <div class="form-group">
-        <label for="categoria">Categoría</label>
-        <select id="categoria" name="categoria" class="form-control">
-            <option value="" selected>---------</option>
-            {% for categoria in categorias %}
-            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="subcategoria">Subcategoría</label>
-        <select id="subcategoria" name="subcategoria" class="form-control" disabled required>
-            <option value="">-- Selecciona una categoría primero --</option>
-        </select>
-        <div id="error-subcategoria" class="error-message"></div>
-    </div>
-
-
-    <button type="submit">Publicar</button>
-</form>
+</div>
 
 {% endblock %}
 

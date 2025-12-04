@@ -1,25 +1,97 @@
 {% extends 'baseDesing.html'%}
 
 {% block content %}
-    <h1>Detalles publicación</h1>
+<div class="py-5">
+    <!-- Header -->
+    <div class="mb-5 pb-4 border-bottom">
+        <h1 class="display-4 fw-bold">Detalles del artículo</h1>
+    </div>
 
-    <h1>{{post.titulo}}</h1>
-    {% if post.imagen %}
-        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" width="200">
-    {% endif %}
-    <p>Precio: ${{post.articulo.precio}}</p>
-    <p>Cant: {{post.articulo.cantidad}}</p>
-    <p>Condición: {% if post.articulo.condicion == 'NUEVO' %}Nuevo{% else %}Usado{% endif %}</p>
-    <p>Vendedor: {{post.idUsuario.username}}</p>
-    {% if request.user != post.idUsuario %}
-        <a href="{% url 'sendMessage' post.id %}" class="btn">Enviar mensaje</a>
-    {% endif %}
-    <p>Detalles: {{post.descripcion}}</p>
+    <div class="row g-4">
+        <!-- Imagen del producto -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm overflow-hidden">
+                <div style="height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    {% if post.imagen %}
+                        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-100 h-100" style="object-fit: cover;">
+                    {% else %}
+                        <i class="bi bi-image" style="font-size: 5rem; color: rgba(255,255,255,0.3);"></i>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
-    {% if request.user == post.idUsuario %}
-        <a href="{% url 'editArticle' post.id %}" class="btn">Editar Publicación</a>
-        <button id="delete-btn" data-id="{{ post.id }}">Eliminar Publicación</button>
-    {% endif %}
+        <!-- Detalles del producto -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Título y Condición -->
+                    <div class="mb-4">
+                        <h1 class="h2 fw-bold mb-2">{{ post.titulo }}</h1>
+                        <div>
+                            {% if post.articulo.condicion == 'NUEVO' %}
+                                <span class="badge bg-success"><i class="bi bi-star me-1"></i>Nuevo</span>
+                            {% else %}
+                                <span class="badge bg-secondary"><i class="bi bi-arrow-counterclockwise me-1"></i>Usado</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Precio Principal -->
+                    <div class="mb-4 pb-4 border-bottom">
+                        <div class="h3 text-primary fw-bold mb-2">${{ post.articulo.precio }}</div>
+                        <p class="text-muted mb-1"><i class="bi bi-box me-2"></i>Cantidad disponible: <strong>{{ post.articulo.cantidad }} unidad(es)</strong></p>
+                    </div>
+
+                    <!-- Info del Vendedor -->
+                    <div class="mb-4 pb-4 border-bottom">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-person me-2" style="color: #0d6efd;"></i>Información del vendedor</h5>
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0"><strong>Vendedor:</strong> <a href="/profile/" class="text-decoration-none">{{ post.idUsuario.username }}</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4 pb-4 border-bottom">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-card-text me-2" style="color: #0d6efd;"></i>Descripción</h5>
+                        <p class="text-muted" style="line-height: 1.8;">{{ post.descripcion }}</p>
+                    </div>
+
+                    <!-- Especificaciones -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-info-circle me-2" style="color: #0d6efd;"></i>Especificaciones</h5>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Condición</small>
+                                <strong>{% if post.articulo.condicion == 'NUEVO' %}Nuevo{% else %}Usado{% endif %}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Estado</small>
+                                <strong>
+                                    {% if post.estado == 'ACTIVA' %}
+                                        <span class="text-success">🟢 Activa</span>
+                                    {% else %}
+                                        <span class="text-warning">⏸️ Pausada</span>
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="d-grid gap-2 d-sm-flex">
+                        {% if request.user != post.idUsuario %}
+                            <a href="{% url 'sendMessage' post.id %}" class="btn btn-primary btn-lg flex-grow-1"><i class="bi bi-chat me-2"></i>Enviar mensaje</a>
+                        {% else %}
+                            <a href="{% url 'editArticle' post.id %}" class="btn btn-warning btn-lg flex-grow-1"><i class="bi bi-pencil-square me-2"></i>Editar</a>
+                            <button id="delete-btn" data-id="{{ post.id }}" class="btn btn-danger btn-lg flex-grow-1"><i class="bi bi-trash me-2"></i>Eliminar</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -61,10 +133,8 @@ if (deleteBtn) {
         })
         .then(response => {
             if (response.ok) {
-                // Redirect to the main buy page on success
                 window.location.href = "{% url 'buy' %}";
             } else {
-                // Handle errors
                 return response.json().then(data => {
                     console.error('Error deleting post:', data);
                     alert('Hubo un error al eliminar la publicación.');

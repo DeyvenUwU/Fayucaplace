@@ -1,85 +1,126 @@
 {% extends 'baseDesing.html'%}
 
 {% block content %}
-<h1>Editar artículo</h1>
-
-<div id="error-container" style="color: red;"></div>
-
-<form id="edit-article-form" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    <div class="form-group">
-        <label for="id_titulo">Título</label>
-        <input type="text" name="titulo" id="id_titulo" value="{{ form.instance.titulo }}" required>
-        <div id="error-titulo" class="error-message"></div>
+<div class="py-5">
+    <!-- Header -->
+    <div class="mb-5 pb-4 border-bottom">
+        <h1 class="display-4 fw-bold mb-2"><i class="bi bi-pencil-square me-3" style="color: #0d6efd;"></i>Editar artículo</h1>
+        <p class="text-muted">Actualiza los datos de tu artículo</p>
     </div>
 
-    <div class="form-group">
-        <label for="id_descripcion">Descripción</label>
-        <textarea name="descripcion" id="id_descripcion" required>{{ form.instance.descripcion }}</textarea>
-        <div id="error-descripcion" class="error-message"></div>
-    </div>
+    <!-- Alertas de Error -->
+    <div id="error-container"></div>
 
-    <div class="form-group">
-        <label for="id_precio">Precio</label>
-        <input type="number" name="precio" id="id_precio" step="0.01" value="{{ form.articulo_instance.precio }}" required>
-        <div id="error-precio" class="error-message"></div>
-    </div>
+    <!-- Formulario -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <form id="edit-article-form" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-    <div class="form-group">
-        <label for="id_cantidad">Cantidad</label>
-        <input type="number" name="cantidad" id="id_cantidad" value="{{ form.articulo_instance.cantidad }}" required>
-        <div id="error-cantidad" class="error-message"></div>
-    </div>
+                        <!-- Título -->
+                        <div class="mb-4">
+                            <label for="id_titulo" class="form-label fw-bold"><i class="bi bi-pencil me-2" style="color: #0d6efd;"></i>Título *</label>
+                            <input type="text" name="titulo" id="id_titulo" class="form-control form-control-lg" value="{{ form.instance.titulo }}" required>
+                            <div id="error-titulo" class="text-danger small mt-2"></div>
+                        </div>
 
-    <div class="form-group">
-        <label for="id_condicion">Condición</label>
-        <select name="condicion" id="id_condicion" required>
-            <option value="NUEVO" {% if form.articulo_instance.condicion == 'NUEVO' %}selected{% endif %}>Nuevo</option>
-            <option value="USADO" {% if form.articulo_instance.condicion == 'USADO' %}selected{% endif %}>Usado</option>
-        </select>
-        <div id="error-condicion" class="error-message"></div>
-    </div>
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <label for="id_descripcion" class="form-label fw-bold"><i class="bi bi-card-text me-2" style="color: #0d6efd;"></i>Descripción *</label>
+                            <textarea name="descripcion" id="id_descripcion" class="form-control" rows="5" required>{{ form.instance.descripcion }}</textarea>
+                            <div id="error-descripcion" class="text-danger small mt-2"></div>
+                        </div>
 
-    <div class="form-group">
-        <label for="id_imagen">Imagen</label>
-        {% if form.instance.imagen %}
-            <p>Imagen actual: <img src="{{ form.instance.imagen.url }}" alt="{{ form.instance.titulo }}" width="100"></p>
-        {% endif %}
-        <input type="file" name="imagen" id="id_imagen" accept="image/*">
-        <div id="error-imagen" class="error-message"></div>
-    </div>
+                        <!-- Precio y Cantidad en fila -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_precio" class="form-label fw-bold"><i class="bi bi-cash-coin me-2" style="color: #0d6efd;"></i>Precio *</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-0">$</span>
+                                    <input type="number" name="precio" id="id_precio" class="form-control" step="0.01" value="{{ form.articulo_instance.precio }}" required>
+                                </div>
+                                <div id="error-precio" class="text-danger small mt-2"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_cantidad" class="form-label fw-bold"><i class="bi bi-box me-2" style="color: #0d6efd;"></i>Cantidad *</label>
+                                <div class="input-group input-group-lg">
+                                    <input type="number" name="cantidad" id="id_cantidad" class="form-control" value="{{ form.articulo_instance.cantidad }}" required>
+                                    <span class="input-group-text bg-light border-0">unidades</span>
+                                </div>
+                                <div id="error-cantidad" class="text-danger small mt-2"></div>
+                            </div>
+                        </div>
 
-    <div class="form-group">
-        <label for="id_estado">Estado</label>
-        <select name="estado" id="id_estado" required>
-            <option value="ACTIVA" {% if form.instance.estado == 'ACTIVA' %}selected{% endif %}>Activa</option>
-            <option value="PAUSADA" {% if form.instance.estado == 'PAUSADA' %}selected{% endif %}>Pausada</option>
-        </select>
-        <div id="error-estado" class="error-message"></div>
-    </div>
+                        <!-- Condición y Estado en fila -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_condicion" class="form-label fw-bold"><i class="bi bi-star me-2" style="color: #0d6efd;"></i>Condición *</label>
+                                <select name="condicion" id="id_condicion" class="form-select form-select-lg" required>
+                                    <option value="NUEVO" {% if form.articulo_instance.condicion == 'NUEVO' %}selected{% endif %}>✨ Nuevo</option>
+                                    <option value="USADO" {% if form.articulo_instance.condicion == 'USADO' %}selected{% endif %}>↻ Usado</option>
+                                </select>
+                                <div id="error-condicion" class="text-danger small mt-2"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_estado" class="form-label fw-bold"><i class="bi bi-toggle-on me-2" style="color: #0d6efd;"></i>Estado *</label>
+                                <select name="estado" id="id_estado" class="form-select form-select-lg" required>
+                                    <option value="ACTIVA" {% if form.instance.estado == 'ACTIVA' %}selected{% endif %}>🟢 Activa</option>
+                                    <option value="PAUSADA" {% if form.instance.estado == 'PAUSADA' %}selected{% endif %}>⏸️ Pausada</option>
+                                </select>
+                                <div id="error-estado" class="text-danger small mt-2"></div>
+                            </div>
+                        </div>
 
-    <div class="form-group">
-        <label for="categoria">Categoría</label>
-        <select id="categoria" name="categoria" class="form-control" required>
-            <option value="" selected>---------</option>
-            {% for categoria in categorias %}
-            <option value="{{ categoria.id }}" {% if categoria.id == form.articulo_instance.categoria.id %}selected{% endif %}>{{ categoria.nombre }}</option>
-            {% endfor %}
-        </select>
-    </div>
+                        <!-- Categoría y Subcategoría -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="categoria" class="form-label fw-bold"><i class="bi bi-tag me-2" style="color: #0d6efd;"></i>Categoría *</label>
+                                <select id="categoria" name="categoria" class="form-select form-select-lg" required>
+                                    <option value="">-- Selecciona una categoría --</option>
+                                    {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}" {% if categoria.id == form.articulo_instance.categoria.id %}selected{% endif %}>{{ categoria.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="subcategoria" class="form-label fw-bold"><i class="bi bi-collection me-2" style="color: #0d6efd;"></i>Subcategoría *</label>
+                                <select id="subcategoria" name="subcategoria" class="form-select form-select-lg" required>
+                                    <option value="">-- Selecciona una categoría --</option>
+                                </select>
+                                <div id="error-subcategoria" class="text-danger small mt-2"></div>
+                            </div>
+                        </div>
 
-    <div class="form-group">
-        <label for="subcategoria">Subcategoría</label>
-        <select id="subcategoria" name="subcategoria" class="form-control" required>
-            <option value="">-- Selecciona una categoría --</option>
-        </select>
-        <div id="error-subcategoria" class="error-message"></div>
-    </div>
+                        <!-- Imagen -->
+                        <div class="mb-5">
+                            <label class="form-label fw-bold"><i class="bi bi-image me-2" style="color: #0d6efd;"></i>Imagen</label>
+                            {% if form.instance.imagen %}
+                                <div class="mb-3">
+                                    <p class="text-muted small mb-2">Imagen actual:</p>
+                                    <img id="current-image" src="{{ form.instance.imagen.url }}" alt="{{ form.instance.titulo }}" class="img-fluid rounded" style="max-width: 300px; max-height: 300px; object-fit: cover;">
+                                </div>
+                            {% endif %}
+                            <div class="input-group">
+                                <input type="file" name="imagen" id="id_imagen" class="form-control form-control-lg" accept="image/*">
+                                <label class="input-group-text bg-light"><i class="bi bi-cloud-arrow-up"></i></label>
+                            </div>
+                            <small class="text-muted d-block mt-2">Formato: JPG, PNG. Tamaño máximo: 5MB</small>
+                            <div id="error-imagen" class="text-danger small mt-2"></div>
+                        </div>
 
-    <button type="submit">Guardar cambios</button>
-    <a href="{% url 'articleDetails' post.id %}" class="btn">Cancelar</a>
-</form>
+                        <!-- Botones -->
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
+                            <a href="{% url 'articleDetails' form.instance.id %}" class="btn btn-lg btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Cancelar</a>
+                            <button type="submit" class="btn btn-lg btn-primary"><i class="bi bi-check-circle me-2"></i>Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 

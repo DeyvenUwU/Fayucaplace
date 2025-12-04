@@ -1,13 +1,89 @@
 {% extends 'baseDesing.html' %}
 
 {% block content %}
-  <h2>Enviar mensaje a {{ post.idUsuario.username }}</h2>
+<div class="py-5">
+    <!-- Header -->
+    <div class="mb-5 pb-4 border-bottom">
+        <h1 class="display-4 fw-bold mb-2"><i class="bi bi-chat-square-text me-3" style="color: #0d6efd;"></i>Enviar mensaje</h1>
+        <p class="text-muted">Inicia una conversación con el vendedor</p>
+    </div>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Enviar</button>
-  </form>
+    <!-- Formulario -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Info del destinatario -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                                {{ post.idUsuario.username|first|upper }}
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="mb-1 fw-bold">{{ post.idUsuario.username }}</h5>
+                            <p class="text-muted mb-0"><i class="bi bi-envelope me-2"></i>Destinatario del mensaje</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <a href="{{ cancel_url }}">Cancelar</a>
+            <!-- Formulario de mensaje -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_content" class="form-label fw-bold">
+                                <i class="bi bi-chat-left-text me-2" style="color: #0d6efd;"></i>Mensaje *
+                            </label>
+                            <textarea 
+                                name="content" 
+                                id="id_content" 
+                                class="form-control form-control-lg" 
+                                rows="8" 
+                                placeholder="Escribe tu mensaje aquí... Pregunta sobre el producto, disponibilidad, precio, etc."
+                                required
+                                style="resize: vertical;"
+                            ></textarea>
+                            <small class="text-muted d-block mt-2">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Sé claro y específico en tu mensaje para obtener una mejor respuesta
+                            </small>
+                        </div>
+
+                        <!-- Tarjeta informativa -->
+                        <div class="alert alert-info border-0 mb-4">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>Consejo:</strong> Incluye preguntas específicas sobre el producto para iniciar una buena conversación.
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
+                            <a href="{{ cancel_url }}" class="btn btn-lg btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-lg btn-primary">
+                                <i class="bi bi-send-fill me-2"></i>Enviar mensaje
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="card border-0 bg-light mt-4">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-shield-check me-2" style="color: #198754;"></i>Comunicación segura</h6>
+                    <ul class="mb-0 small text-muted">
+                        <li>Mantén la conversación en la plataforma</li>
+                        <li>No compartas información personal sensible</li>
+                        <li>Reporta cualquier comportamiento sospechoso</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

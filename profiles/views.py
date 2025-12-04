@@ -55,7 +55,8 @@ def signIn(request):
         })
 
 def editProfile(request):
-    profile = request.user.profile
+    # Obtener o crear profile si no existe
+    profile, created = Profile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
         form = EditProfileForm(request.POST, request.FILES, instance=profile, user=request.user)

@@ -1,45 +1,80 @@
 {% extends 'baseDesing.html'%}
 
 {% block content %}
-<h1>Nuevo anuncio</h1>
-
-<div id="error-container" style="color: red;"></div>
-
-<form id="new-ad-form">
-    {% csrf_token %}
-
-    <div class="form-group">
-        <label for="id_titulo">Título</label>
-        <input type="text" name="titulo" id="id_titulo" required>
-        <div id="error-titulo" class="error-message"></div>
+<div class="py-5">
+    <!-- Header -->
+    <div class="mb-5 pb-4 border-bottom">
+        <h1 class="display-4 fw-bold mb-2"><i class="bi bi-megaphone me-3" style="color: #dc3545;"></i>Nuevo anuncio</h1>
+        <p class="text-muted">Promociona tu negocio o evento a toda la comunidad</p>
     </div>
 
-    <div class="form-group">
-        <label for="id_descripcion">Descripción</label>
-        <textarea name="descripcion" id="id_descripcion" required></textarea>
-        <div id="error-descripcion" class="error-message"></div>
-    </div>
+    <!-- Alertas de Error -->
+    <div id="error-container"></div>
 
-    <div class="form-group">
-        <label for="id_fechaInicio">Fecha de inicio</label>
-        <input type="date" name="fechaInicio" id="id_fechaInicio" required>
-        <div id="error-fechaInicio" class="error-message"></div>
-    </div>
+    <!-- Formulario -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <form id="new-ad-form">
+                        {% csrf_token %}
 
-    <div class="form-group">
-        <label for="id_fechaFin">Fecha de fin</label>
-        <input type="date" name="fechaFin" id="id_fechaFin" required>
-        <div id="error-fechaFin" class="error-message"></div>
-    </div>
+                        <!-- Título -->
+                        <div class="mb-4">
+                            <label for="id_titulo" class="form-label fw-bold"><i class="bi bi-pencil me-2" style="color: #dc3545;"></i>Título del anuncio *</label>
+                            <input type="text" name="titulo" id="id_titulo" class="form-control form-control-lg" placeholder="Ej: Gran oferta de verano" required>
+                            <div id="error-titulo" class="text-danger small mt-2"></div>
+                        </div>
 
-    <div class="form-group">
-        <label for="id_imagen">Imagen</label>
-        <input type="file" name="imagen" id="id_imagen" accept="image/*">
-        <div id="error-imagen" class="error-message"></div>
-    </div>
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <label for="id_descripcion" class="form-label fw-bold"><i class="bi bi-card-text me-2" style="color: #dc3545;"></i>Descripción *</label>
+                            <textarea name="descripcion" id="id_descripcion" class="form-control" rows="5" placeholder="Describe tu anuncio, promoción o evento en detalle..." required></textarea>
+                            <div id="error-descripcion" class="text-danger small mt-2"></div>
+                        </div>
 
-    <button type="submit">Publicar</button>
-</form>
+                        <!-- Fechas en fila -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_fechaInicio" class="form-label fw-bold"><i class="bi bi-calendar-event me-2" style="color: #dc3545;"></i>Fecha de inicio *</label>
+                                <input type="date" name="fechaInicio" id="id_fechaInicio" class="form-control form-control-lg" required>
+                                <div id="error-fechaInicio" class="text-danger small mt-2"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_fechaFin" class="form-label fw-bold"><i class="bi bi-calendar-check me-2" style="color: #dc3545;"></i>Fecha de fin *</label>
+                                <input type="date" name="fechaFin" id="id_fechaFin" class="form-control form-control-lg" required>
+                                <div id="error-fechaFin" class="text-danger small mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Imagen -->
+                        <div class="mb-5">
+                            <label for="id_imagen" class="form-label fw-bold"><i class="bi bi-image me-2" style="color: #dc3545;"></i>Imagen del anuncio (opcional)</label>
+                            <div class="input-group">
+                                <input type="file" name="imagen" id="id_imagen" class="form-control form-control-lg" accept="image/*">
+                                <label class="input-group-text bg-light"><i class="bi bi-cloud-arrow-up"></i></label>
+                            </div>
+                            <small class="text-muted d-block mt-2">Formato: JPG, PNG. Tamaño máximo: 5MB. Recomendado: 1200x400px</small>
+                            <div id="error-imagen" class="text-danger small mt-2"></div>
+                        </div>
+
+                        <!-- Info Box -->
+                        <div class="alert alert-warning border-0 mb-4">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>Consejo:</strong> Los anuncios con imágenes llamativas reciben más visitas. ¡Elige una foto de calidad!
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
+                            <button type="reset" class="btn btn-lg btn-outline-secondary"><i class="bi bi-arrow-clockwise me-2"></i>Limpiar</button>
+                            <button type="submit" class="btn btn-lg btn-danger"><i class="bi bi-check-circle me-2"></i>Publicar anuncio</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 

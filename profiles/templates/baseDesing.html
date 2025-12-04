@@ -1,33 +1,152 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FayucaPlace{% endblock %}</title>
+    <title>{% block title %}Fayucaplace - Perfil{% endblock %}</title>
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Estilos personalizados Fayucaplace -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <nav>
-      {% if user.is_authenticated %}
-        <ul>
-          <li><a href="/mainpanel">Pagina principal</a></li>
-          <li><a href="/chat">Mensajes</a></li>
-          <li><a href="/buy">Comprar</a></li>
-          <li><a href="/newarticle">Vender</a></li>
-          <li><a href="/newad">Anunciar</a></li>
-          <li><a href="/mypublications">Mis publicaciones</a></li>
-          <li><a href="/editprofile">Editar perfil</a></li>
-          <li><a href="/logout">Cerrar sesión</a></li>
-        </ul>
-      {% else %}
-        <ul>
-          <li><a href="/signup">Crear cuenta</a></li>
-          <li><a href="/login">Ingresar</a></li>
-        </ul>
-      {% endif %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c3e50;">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="/mainpanel">
+                <i class="bi bi-shop"></i> FayucaPlace
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/mainpanel"><i class="bi bi-house"></i> Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/buy"><i class="bi bi-bag"></i> Comprar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/newarticle"><i class="bi bi-plus-circle"></i> Vender</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/newad"><i class="bi bi-megaphone"></i> Anunciar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/mypublications"><i class="bi bi-file-earmark"></i> Mis publicaciones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/chat"><i class="bi bi-chat"></i> Mensajes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/editprofile"><i class="bi bi-person"></i> Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Salir</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login"><i class="bi bi-box-arrow-in-right"></i> Ingresar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary text-white ms-2" href="/signup"><i class="bi bi-person-plus"></i> Crear cuenta</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </nav>
 
-    {% block content %}{% endblock %}
+    <!-- Contenido Principal -->
+    <main class="py-4 flex-grow-1">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 
+    <!-- Footer Mejorado -->
+    <footer class="bg-dark text-white mt-5 py-5">
+        <div class="container">
+            <!-- Footer Content -->
+            <div class="row mb-4 pb-4 border-bottom border-secondary">
+                <!-- About -->
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-shop me-2" style="color: #0d6efd;"></i>FayucaPlace
+                    </h5>
+                    <p class="text-muted small">
+                        La plataforma de comercio local más segura y sencilla. Compra, vende y anuncia productos con confianza.
+                    </p>
+                    <div class="mt-3">
+                        <small class="text-muted">📍 Ubicación local</small><br>
+                        <small class="text-muted">📧 contacto@fayucaplace.com</small><br>
+                        <small class="text-muted">📞 +1 234 567 8900</small>
+                    </div>
+                </div>
+
+                <!-- Categorías -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase" style="letter-spacing: 0.5px;">Categorías</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-primary">Electrónica</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-primary">Ropa y Accesorios</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-primary">Hogar y Jardín</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-primary">Deportes</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-primary">Libros y Medios</a></li>
+                    </ul>
+                </div>
+
+                <!-- Enlaces Útiles -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase" style="letter-spacing: 0.5px;">Enlaces Útiles</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/mainpanel" class="text-muted text-decoration-none hover-primary"><i class="bi bi-house me-1"></i>Inicio</a></li>
+                        <li class="mb-2"><a href="/buy" class="text-muted text-decoration-none hover-primary"><i class="bi bi-search me-1"></i>Explorar</a></li>
+                        <li class="mb-2"><a href="/chat" class="text-muted text-decoration-none hover-primary"><i class="bi bi-chat me-1"></i>Contacto</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-primary"><i class="bi bi-question-circle me-1"></i>Preguntas Frecuentes</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-primary"><i class="bi bi-shield-check me-1"></i>Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase" style="letter-spacing: 0.5px;">Newsletter</h6>
+                    <p class="text-muted small mb-3">Recibe ofertas y noticias semanales.</p>
+                    <div class="input-group input-group-sm">
+                        <input type="email" class="form-control" placeholder="Tu correo" aria-label="Email">
+                        <button class="btn btn-primary" type="button"><i class="bi bi-send"></i></button>
+                    </div>
+                    <p class="text-muted small mt-2">No compartimos tu correo con terceros.</p>
+                </div>
+            </div>
+
+            <!-- Redes Sociales y Copyright -->
+            <div class="row align-items-center pt-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h6 class="fw-bold mb-3 text-uppercase" style="letter-spacing: 0.5px;">Síguenos</h6>
+                    <div class="social-links">
+                        <a href="#" class="btn btn-sm btn-outline-light me-2"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light me-2"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light me-2"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light me-2"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted small mb-0">&copy; 2025 <strong>FayucaPlace</strong>. Todos los derechos reservados.</p>
+                    <p class="text-muted small mb-0">Hecho con <i class="bi bi-heart-fill" style="color: #dc3545;"></i> para la comunidad local.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
