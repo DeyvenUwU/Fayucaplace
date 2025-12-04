@@ -105,6 +105,7 @@ def myPublications(request):
         'categorias': categorias
     })
 
+
 @login_required
 def editArticle(request, id):
     publicacion = get_object_or_404(Publicacion, pk=id, idUsuario=request.user)
