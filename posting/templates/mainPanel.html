@@ -8,15 +8,6 @@
 
 <div class="filters">
     <input type="text" id="search" placeholder="Buscar por título...">
-    <select id="categoria">
-        <option value="">Todas las categorías</option>
-        {% for categoria in categorias %}
-            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-        {% endfor %}
-    </select>
-    <select id="subcategoria" disabled>
-        <option value="">Todas las subcategorías</option>
-    </select>
 </div>
 
 <ul id="post-list">
@@ -41,20 +32,14 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
-    const categoriaSelect = document.getElementById('categoria');
-    const subcategoriaSelect = document.getElementById('subcategoria');
     const postList = document.getElementById('post-list');
 
     async function fetchAndRenderPosts() {
         let url = '/api/publicaciones/?';
         const searchTerm = searchInput.value;
-        const subcategoriaId = subcategoriaSelect.value;
 
         if (searchTerm) {
             url += `search=${searchTerm}&`;
-        }
-        if (subcategoriaId) {
-            url += `subcategoria=${subcategoriaId}&`;
         }
 
         // We only want to show ads, so we filter by publications that have an ad
@@ -71,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const postElement = document.createElement('li');
                     let postContent = `
                         <a href="/ad/${post.id}/">
-                            ${post.imagen ? `<img src="${post.imagen}" alt="${post.titulo}" width="200">` : ''}
+                            ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" width="200">` : ''}
                             <h2>${post.titulo}</h2>
                         </a>
                     `;
@@ -87,149 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    categoriaSelect.addEventListener('change', async function() {
-        const categoriaId = this.value;
-        subcategoriaSelect.innerHTML = '<option value="">Todas las subcategorías</option>';
-        subcategoriaSelect.disabled = true;
-
-        if (!categoriaId) {
-            fetchAndRenderPosts();
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/subcategorias/?categoria=${categoriaId}`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const subcategorias = await response.json();
-
-            subcategorias.forEach(sub => subcategoriaSelect.add(new Option(sub.nombre, sub.id)));
-            subcategoriaSelect.disabled = false;
-        } catch (error) {
-            console.error('Error fetching subcategories:', error);
-            subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
-        }
-        fetchAndRenderPosts();
-    });
-
     searchInput.addEventListener('input', fetchAndRenderPosts);
-    subcategoriaSelect.addEventListener('change', fetchAndRenderPosts);
 });
-</script>
-{% extends 'baseDesing.html'%}
-
-{% block content %}
-
-<h1>Esta semana...</h1>
-
-<h1>Anuncios</h1>
-
-<div class="filters">
-    <input type="text" id="search" placeholder="Buscar por título...">
-    <select id="categoria">
-        <option value="">Todas las categorías</option>
-        {% for categoria in categorias %}
-            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-        {% endfor %}
-    </select>
-    <select id="subcategoria" disabled>
-        <option value="">Todas las subcategorías</option>
-    </select>
-</div>
-
-<ul id="post-list">
-    {% for p in posts %}
-        <li>
-            <a href="{% url 'adDetails' p.id %}">
-                {% if p.imagen %}
-                    <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}" width="200">
-                {% endif %}
-                
-                <h2>{{ p.titulo }}</h2>                
-            </a>
-        </li>
-    {% empty %}
-        <li>No hay anuncios</li>
-    {% endfor %}
-</ul>
-
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search');
-    const categoriaSelect = document.getElementById('categoria');
-    const subcategoriaSelect = document.getElementById('subcategoria');
-    const postList = document.getElementById('post-list');
-
-    async function fetchAndRenderPosts() {
-        let url = '/api/publicaciones/?';
-        const searchTerm = searchInput.value;
-        const subcategoriaId = subcategoriaSelect.value;
-
-        if (searchTerm) {
-            url += `search=${searchTerm}&`;
-        }
-        if (subcategoriaId) {
-            url += `subcategoria=${subcategoriaId}&`;
-        }
-
-        // We only want to show ads, so we filter by publications that have an ad
-        url += `anuncio__isnull=false`;
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const posts = await response.json();
-
-            postList.innerHTML = '';
-            if (posts.length > 0) {
-                posts.forEach(post => {
-                    const postElement = document.createElement('li');
-                    let postContent = `
-                        <a href="/ad/${post.id}/">
-                            ${post.imagen ? `<img src="${post.imagen}" alt="${post.titulo}" width="200">` : ''}
-                            <h2>${post.titulo}</h2>
-                        </a>
-                    `;
-                    postElement.innerHTML = postContent;
-                    postList.appendChild(postElement);
-                });
-            } else {
-                postList.innerHTML = '<li>No hay anuncios que coincidan con los filtros.</li>';
-            }
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-            postList.innerHTML = '<li>Ocurrió un error al cargar los anuncios.</li>';
-        }
-    }
-
-    categoriaSelect.addEventListener('change', async function() {
-        const categoriaId = this.value;
-        subcategoriaSelect.innerHTML = '<option value="">Todas las subcategorías</option>';
-        subcategoriaSelect.disabled = true;
-
-        if (!categoriaId) {
-            fetchAndRenderPosts();
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/subcategorias/?categoria=${categoriaId}`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const subcategorias = await response.json();
-
-            subcategorias.forEach(sub => subcategoriaSelect.add(new Option(sub.nombre, sub.id)));
-            subcategoriaSelect.disabled = false;
-        } catch (error) {
-            console.error('Error fetching subcategories:', error);
-            subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
-        }
-        fetchAndRenderPosts();
-    });
-
-    searchInput.addEventListener('input', fetchAndRenderPosts);
-    subcategoriaSelect.addEventListener('change', fetchAndRenderPosts);
-});
-</script>
+</script>   
 {% endblock %}

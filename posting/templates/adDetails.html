@@ -8,26 +8,70 @@
         <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" width="200">
     {% endif %}
     <p>Anunciado por: {{post.idUsuario.username}}</p>
-    <a href="{% url 'sendMessage' post.id %}" class="btn">Enviar mensaje</a>
-    <p>Detalles: {{post.descripcion}}</p>
-
-{% endblock %}
-
-{% block scripts %}
-{% extends 'baseDesing.html'%}
-
-{% block content %}
-    <h1>Detalles publicación</h1>
-
-    <h1>{{post.titulo}}</h1>
-    {% if post.imagen %}
-        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" width="200">
+    {% if request.user != post.idUsuario %}
+        <a href="{% url 'sendMessage' post.id %}" class="btn">Enviar mensaje</a>
     {% endif %}
-    <p>Anunciado por: {{post.idUsuario.username}}</p>
-    <a href="{% url 'sendMessage' post.id %}" class="btn">Enviar mensaje</a>
     <p>Detalles: {{post.descripcion}}</p>
+
+    {% if request.user == post.idUsuario %}
+        <a href="{% url 'editAd' post.id %}" class="btn">Editar Publicación</a>
+        <button id="delete-btn" data-id="{{ post.id }}">Eliminar Publicación</button>
+    {% endif %}
 
 {% endblock %}
 
 {% block scripts %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+const deleteBtn = document.getElementById('delete-btn');
+if (deleteBtn) {
+    deleteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (!confirm('¿Estás seguro de que quieres eliminar este anuncio?')) {
+            return;
+        }
+
+        const postId = this.dataset.id;
+
+        fetch(`/api/publicaciones/${postId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Redirect to the main panel on success
+                window.location.href = "{% url 'mainPanel' %}";
+            } else {
+                return response.json().then(data => {
+                    console.error('Error deleting ad:', data);
+                    alert('Hubo un error al eliminar el anuncio.');
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un problema de conexión al intentar eliminar el anuncio.');
+        });
+    });
+}
+</script>
 {% endblock %}
