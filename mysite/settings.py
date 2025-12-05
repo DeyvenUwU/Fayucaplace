@@ -155,8 +155,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Dominios que pueden consumir la API (cuando tengas dominio real lo pones aquí)
 CORS_ALLOWED_ORIGINS = [
-    "https://attackable-unsumptuously-maryln.ngrok-free.dev/",
+    "https://attackable-unsumptuously-maryln.ngrok-free.dev",
 ]
+
 
 
 # Sólo forzamos estas opciones cuando no estamos en DEBUG
