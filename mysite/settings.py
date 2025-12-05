@@ -147,6 +147,18 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ==========================
+# CORS (Cross-Origin Resource Sharing)
+# ==========================
+
+# Dominios que pueden consumir la API (cuando tengas dominio real lo pones aquí)
+CORS_ALLOWED_ORIGINS = [
+    "https://attackable-unsumptuously-maryln.ngrok-free.dev/",
+]
+
+# Durante desarrollo, permite todo (no dejar así en producción)
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 
 if not DEBUG:
@@ -165,5 +177,5 @@ if not DEBUG:
 # Protege contra algunos ataques de tipo MIME sniffing
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Evita que el sitio sea embebido en iframes (clickjacking)
+# Evita que el sitio sea embebido en iframes (clickjacking
 X_FRAME_OPTIONS = 'DENY'
