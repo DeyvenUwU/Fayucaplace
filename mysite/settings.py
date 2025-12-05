@@ -159,9 +159,7 @@ CORS_ALLOWED_ORIGINS = [
     # "https://otro-dominio.com",
 ]
 
-# Si quieres permitir todo durante desarrollo (opcional):
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
+
 
 if not DEBUG:
     # Cookies solo por HTTPS
