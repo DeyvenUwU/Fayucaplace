@@ -154,10 +154,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Dominios desde los que se puede consumir la API
 # Sustituye por el dominio real de tu frontend
-CORS_ALLOWED_ORIGINS = [
-    "https://tudominio-frontend.com", #Tadan cambia la direccion por la direccion de dominio
+
+
+#CORS_ALLOWED_ORIGINS = [
+ #   "https://tudominio-frontend.com", #Tadan cambia la direccion por la direccion de dominio
     # "https://otro-dominio.com",
-]
+#]
 
 
 
